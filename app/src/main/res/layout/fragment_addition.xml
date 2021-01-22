@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_60"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="返回"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/txt_next"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="下一步"
+                app:layout_constraintRight_toRightOf="parent"
+                android:gravity="center"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@id/layout_title"
+            app:layout_constraintBottom_toTopOf="@id/txt_tag"/>
+        <TextView
+            android:id="@+id/txt_tag"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_60"
+            android:text="添加标签"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewPager"
+            android:gravity="center"
+            android:textSize="20sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

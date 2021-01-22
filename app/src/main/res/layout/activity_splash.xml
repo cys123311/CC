@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:gravity="center"
+    android:id="@+id/bk_guidance"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_400"
+        android:src="@drawable/splash_bg"
+        android:layout_marginTop="@dimen/dp_120"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/splash_weibo"
+        android:layout_marginBottom="@dimen/dp_50"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</LinearLayout>

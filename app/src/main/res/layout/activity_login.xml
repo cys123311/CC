@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.login.LoginActivity">
+
+
+    <com.sprout.ui.custom.CustomVideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_splendid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:text="登录后更精彩"
+            android:textColor="#fff"
+            android:textSize="32dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="150*****574"
+            android:textColor="#fff"
+            android:textSize="22dp"
+            android:visibility="visible"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_splendid" />
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/phone_login"
+            android:text="本机号码一键登录"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/tv_phone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="其他号码登录"
+            android:textColor="#A19D9D"
+            android:textSize="14dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:text="其他方式登录"
+            android:textColor="#A19D9D"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toTopOf="@id/ll_images"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_images"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/tv_text2">
+
+            <ImageView
+                android:id="@+id/iv_wb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/wb" />
+
+            <ImageView
+                android:id="@+id/iv_wx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:src="@mipmap/wx" />
+
+            <ImageView
+                android:id="@+id/iv_qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:src="@mipmap/qq" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:text="登录表示您已阅读并同意 用户协议 | 隐私条款"
+            android:textColor="#fff"
+            android:textSize="10dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/tv_text1" />
+
+        <TextView
+            android:id="@+id/tv_text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:text="以及 中国移动认证服务条款"
+            android:textColor="#fff"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

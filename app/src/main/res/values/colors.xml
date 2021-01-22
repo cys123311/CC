@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <color name="primary">#FFFFFF</color>
+
+    <color name="colorA">#A3A0A0</color>
+    <color name="colorB">#EF6464</color>
+    <color name="colorC">#FAD8D8</color>
+    <color name="colorD">#00ffffff</color>
+    <color name="colorE">#F85D2C</color>
+    <color name="colorF">#07AC0E</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="gray">#757373</color>
+    <color name="red">#ff0000</color>
+    <color name="price">#F14848</color>
+    <color name="gray_background">#EFEFEF</color>
+    <color name="gray_word">#DFDFDF</color>
+
+    <color name="gray_1">#111111</color>
+    <color name="gray_2">#222222</color>
+    <color name="gray_3">#333333</color>
+    <color name="gray_4">#444444</color>
+    <color name="gray_5">#555555</color>
+    <color name="gray_6">#666666</color>
+    <color name="gray_7">#777777</color>
+    <color name="gray_8">#888888</color>
+    <color name="gray_9">#999999</color>
+    <color name="gray_a">#AAAAAA</color>
+    <color name="gray_b">#BBBBBB</color>
+    <color name="gray_c">#CCCCCC</color>
+    <color name="gray_d">#DDDDDD</color>
+    <color name="gray_e">#EEEEEE</color>
+
+    <color name="f1">#F1F1F1</color>
+    <color name="f2">#F2F2F2</color>
+    <color name="f3">#F3F3F3</color>
+    <color name="f4">#F4F4F4</color>
+    <color name="f5">#F5F5F5</color>
+    <color name="f6">#F6F6F6</color>
+    <color name="f7">#F7F7F7</color>
+    <color name="f8">#F8F8F8</color>
+    <color name="f9">#F9F9F9</color>
+
+    <color name="activity_bg_color">#fff5f5f5</color>
+    <color name="orange">#FFE4CA</color>
+
+    <color name="home_tab_selected">#000000</color>
+    <color name="home_tab_unselected">#A2A2A2</color>
+
+    <!--
+    全透明：#00000000
+    半透明：#80000000
+    不透明：#FF000000
+    白色半透明：#80FFFFFF
+    红色30%透明：#4Dca0d0d
+-->
+
+    <color name="black">#000</color>
+    <color name="white">#fff</color>
+    <color name="green_home">#80A55F</color>
+    <color name="white_lucency">#80FFFFFF</color>
+
+    <!--验证码-->
+    <color name="transparent">#00000000</color>
+    <color name="translucent_white">#ddd</color>
+
+</resources>
