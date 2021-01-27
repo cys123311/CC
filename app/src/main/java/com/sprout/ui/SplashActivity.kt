@@ -1,7 +1,6 @@
 package com.sprout.ui
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -19,14 +18,14 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.sprout.R
 import com.sprout.base.BaseActivity
 import com.sprout.base.BaseViewModel
 import com.sprout.databinding.ActivitySplashBinding
 import com.sprout.ui.main.HomeActivity
+import com.sprout.ui.main.InitActivity
 import com.sprout.ui.main.login.RegisterActivity
-import com.sprout.utils.SpUtils
+import com.sprout.utils.MyMmkv
 import com.sprout.utils.StatusBarUtil
 import com.sprout.utils.SysUtils
 import com.sprout.widget.clicks
@@ -36,7 +35,8 @@ import kotlinx.android.synthetic.main.layout_guidance_pop.view.*
 class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
 
     private var popupWindow: PopupWindow? = null
-    private var guidance: String? = null
+    private var guidance : Boolean = MyMmkv.getBool("guidance") //是否进入过引导页
+    private var long : Boolean = MyMmkv.getBool("long")//是否登录过
 
     override fun initView() {
         StatusBarUtil.immersive(this)
@@ -61,12 +61,11 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
             )
         } else {
             //不用申请权限  判断是否登录过 跳转到登录界面
-            guidance = SpUtils.instance!!.getString("guidance")
-            if (guidance != null) {
-                //进入首页
+            if (long) {
+                //登录过 进入首页
                 initHome()
             } else {
-                //进入登录
+                //没有登陆过 进入登录
                 initRegister()
             }
         }
@@ -133,7 +132,8 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
             initPwNo()
             initRegister()
             val ok = "已经进入过引导页"
-            SpUtils.instance!!.setValue("guidance", ok)
+            MyMmkv.setValue("guidance",true)
+//            SpUtils.instance!!.setValue("guidance", ok)
         }
 
         //在按钮的下方弹出  无偏移 第一种方式
@@ -189,10 +189,13 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
         when (requestCode) {
             1001 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //判断 是否登陆过
-                    guidance = SpUtils.instance!!.getString("guidance")
-                    if (!TextUtils.isEmpty(guidance)) {
-                        //进入首页
+                    //判断 是否登陆过 为true 进入首页
+                    if (long) {
+                        //是否为首次登录 进入爱好选择
+//                        if(guidance){
+//                            startActivity(Intent(mContext, InitActivity::class.java))
+//                            finish()
+//                        }
                         initHome()
                     } else {
                         //pop 再次确认 进入登录

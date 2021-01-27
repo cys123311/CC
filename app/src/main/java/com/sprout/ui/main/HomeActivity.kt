@@ -5,14 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.tabs.TabLayout
 import com.sprout.R
-import com.sprout.ui.main.addition.AdditionFragment
+import com.sprout.ui.main.addition.AdditionActivity
 import com.sprout.ui.main.discover.DiscoverFragment
 import com.sprout.ui.main.home.HomeFragment
 import com.sprout.ui.main.message.MessageFragment
 import com.sprout.ui.main.mine.MineFragment
-import com.sprout.widget.clicks
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() ,View.OnClickListener {
@@ -21,7 +19,7 @@ class HomeActivity : AppCompatActivity() ,View.OnClickListener {
 
     private val homeFrag = HomeFragment()//首页
     private val discover = DiscoverFragment()//发现
-    private val addition = AdditionFragment()//添加
+    private val addition = AdditionActivity()//添加
     private val message = MessageFragment()//消息
     private val mine = MineFragment()//我的
 
@@ -48,9 +46,8 @@ class HomeActivity : AppCompatActivity() ,View.OnClickListener {
         val t = manager!!.beginTransaction()
 
         t.add(R.id.mFrame, homeFrag).add(R.id.mFrame, discover)
-            .add(R.id.mFrame, addition).add(R.id.mFrame, message).add(R.id.mFrame, mine)
-            .hide(discover).hide(addition)
-            .hide(message).hide(mine).commit()
+            .add(R.id.mFrame, message).add(R.id.mFrame, mine)
+            .hide(discover).hide(message).hide(mine).commit()
     }
     //TODO 点击事件
     private fun initListener() {
@@ -68,23 +65,23 @@ class HomeActivity : AppCompatActivity() ,View.OnClickListener {
         when (v!!.id) {
             R.id.layout_home,0 -> {
                 iv_oasis_home_img.setImageResource(R.mipmap.main_nav_home_hl)
-                t.show(homeFrag).hide(discover).hide(addition).hide(message).hide(mine)
+                t.show(homeFrag).hide(discover).hide(message).hide(mine)
             }
             R.id.layout_search,1 -> {
                 iv_oasis_search_img.setImageResource(R.mipmap.main_nav_discover_hl)
-                t.show(discover).hide(homeFrag).hide(addition).hide(message).hide(mine)
+                t.show(discover).hide(homeFrag).hide(message).hide(mine)
             }
             R.id.layout_issue,2 -> {//点击加号跳转
-                t.show(addition).hide(homeFrag).hide(discover).hide(message).hide(mine)
+                startActivity(Intent(this,AdditionActivity::class.java))
             }
             R.id.layout_info,3 -> {
                 iv_oasis_info_img.setImageResource(R.mipmap.main_nav_message_hl)
-                t.show(message).hide(homeFrag).hide(addition).hide(discover).hide(mine)
+                t.show(message).hide(homeFrag).hide(discover).hide(mine)
 
             }
             R.id.layout_me,4 -> {
                 iv_oasis_me_img.setImageResource(R.mipmap.main_nav_mine_hl)
-                t.show(mine).hide(homeFrag).hide(addition).hide(discover).hide(message)
+                t.show(mine).hide(homeFrag).hide(discover).hide(message)
             }
         }
         t.commit()

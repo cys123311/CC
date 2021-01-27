@@ -57,6 +57,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.navigation:navigation-runtime:2.3.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -64,6 +65,19 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'com.google.android.material:material:1.2.1'
+
+    //指示器库
+    implementation 'com.github.hackware1993:MagicIndicator:1.6.0'
+    //高德定位
+    implementation 'com.amap.api:location:5.2.0'
+    implementation 'com.amap.api:map2d:6.0.0'
+    implementation 'com.amap.api:search:7.7.0'
+
+    //阿里云
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.5'
+
+    //mmkv数据保存
+    implementation 'com.tencent:mmkv-static:1.0.23'
 
     //本地相机相册选择图片
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'

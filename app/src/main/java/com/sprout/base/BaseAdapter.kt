@@ -15,7 +15,7 @@ import java.lang.reflect.ParameterizedType
  */
 abstract class BaseAdapter<VB : ViewBinding, T>(
     var mContext: Activity,
-    var listDatas: ArrayList<T>
+    var listDatas: List<T>
 ) : RecyclerView.Adapter<BaseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {

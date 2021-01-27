@@ -11,7 +11,7 @@ data class BrandData(
         val id: Int,
         val name: String,
         val sort: Int,
-        val url: Any
+        val url: String
     )
 }
 

@@ -1,121 +1,110 @@
 package com.sprout.ui.main.addition
 
+import android.util.Log
 import android.util.SparseArray
+import android.view.View
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.sprout.BR
 import com.sprout.R
+import com.sprout.api.IItemClick
 import com.sprout.base.BaseActivity
 import com.sprout.databinding.ActivityTagsBinding
 import com.sprout.ui.main.addition.adapter.BrandAdapter
 import com.sprout.ui.main.addition.adapter.GoodAdapter
 import com.sprout.ui.main.addition.bean.BrandData
 import com.sprout.ui.main.addition.bean.GoodData
+import com.sprout.widget.clicks
 import kotlinx.android.synthetic.main.activity_tags.*
 
+
 class TagsActivity :
-    BaseActivity<TagsActViewModel,ActivityTagsBinding>() {
+    BaseActivity<TagsActViewModel, ActivityTagsBinding>(), OnItemChildClickListener {
+
+    lateinit var brandList: MutableList<BrandData.Data>
+    val brandAdapter  : BrandAdapter by lazy { BrandAdapter() }
+
+    lateinit var goodList: MutableList<GoodData.Data>
+    val goodAdapter  : GoodAdapter by lazy { GoodAdapter() }
+
     override fun initView() {
-        TODO("Not yet implemented")
+        v.recyTags.layoutManager = LinearLayoutManager(this)
+
+        brandList = mutableListOf()
+        brandAdapter.setNewInstance(brandList)
+        brandAdapter.addChildClickViewIds(R.id.init_brand)
+        brandAdapter.setOnItemChildClickListener(this)
+
+        goodList = mutableListOf()
+        goodAdapter.setNewInstance(goodList)
+        goodAdapter.addChildClickViewIds(R.id.init_good)
+        goodAdapter.setOnItemChildClickListener(this)
     }
 
     override fun initClick() {
-        TODO("Not yet implemented")
+        v.imgBrand.clicks{
+            if(brandList.size == 0){
+                vm.getBrandList(true)
+            }else{
+                v.recyTags.adapter=brandAdapter
+            }
+        }
+        v.imgGood.clicks {
+            if(goodList.size == 0){
+                vm.getGoodList(true)
+            }else{
+                v.recyTags.adapter=goodAdapter
+            }
+        }
+        v.imgUser.clicks {
+
+        }
+        v.imgAddress.clicks {
+
+        }
     }
 
     override fun initData() {
-        TODO("Not yet implemented")
-    }
-
-    override fun initVM() {
-        TODO("Not yet implemented")
-    }
-
-    /*lateinit var brandList:MutableList<BrandData.Data>
-    lateinit var brandAdapter: BrandAdapter
-
-    lateinit var goodList:MutableList<GoodData.Data>
-    lateinit var goodAdapter: GoodAdapter
-
-
-    override fun initData() {
 
     }
 
     override fun initVM() {
-         vm.brandList.observe(this, Observer {
-             //适配器
-             val brandAdapter = BrandAdapter()
-             //布局管理器
-             v.recyTags.layoutManager = LinearLayoutManager(this)
-             //绑定数据
-             brandAdapter
-             //绑定适配器
-             v.recyTags.adapter = brandAdapter
+        vm.brandList.observe(this, Observer {
+            brandList.clear()
+            brandList.addAll(it.data)
+            recyTags.adapter = brandAdapter
         })
 
         vm.goodList.observe(this, Observer {
-            var goodArr = SparseArray<Int>()
-            brandArr.put(R.layout.adapter_brand_item, BR.goodData)
-            goodList = mutableListOf()
-            goodAdapter = GoodAdapter(this,goodList,goodArr,GoodClick())
-
-            mDataBinding.tagClick = TagsClick()
-
             goodList.clear()
             goodList.addAll(it.data)
             recyTags.adapter = goodAdapter
         })
     }
 
-    override fun initView() {
+    /**
+     * 适配器 条目监听
+     */
+    override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>, view: View, position: Int) {
+        when (view.id) {
+            R.id.init_brand -> {
+                intent.putExtra("name",brandList[position].name)
+                intent.putExtra("id",brandList[position].id)
+                setResult(1,intent)
+                finish()
+            }
+            R.id.init_good->{
+                intent.putExtra("name", goodList[position].name)
+                intent.putExtra("id", goodList[position].id)
+                setResult(2, intent)
+                finish()
+            }
+            else -> {
 
-
-    }
-
-    inner class BrandClick:IItemClick<BrandData.Data>{
-        override fun itemClick(data: BrandData.Data) {
-            intent.putExtra("name",data.name)
-            intent.putExtra("id",data.id)
-            setResult(1,intent)
-            finish()
-        }
-
-    }
-
-    inner class GoodClick:IItemClick<GoodData.Data>{
-        override fun itemClick(data: GoodData.Data) {
-            intent.putExtra("name",data.name)
-            intent.putExtra("id",data.id)
-            setResult(2,intent)
-        }
-
-    }
-
-    inner class TagsClick{
-        fun click(type:Int){
-            when(type){
-                1->{
-                    if(brandList.size == 0){
-                        mViewModel.getBrand()
-                    }else{
-                        recyTags.adapter = brandAdapter
-                    }
-                }
-                2->{
-                    if(goodList.size == 0){
-                        mViewModel.getGood()
-                    }else{
-                        recyTags.adapter = goodAdapter
-                    }
-                }
-                3->{
-
-                }
-                4->{
-
-                }
             }
         }
-    }*/
+    }
 }

@@ -13,7 +13,7 @@ data class GoodData(
         val name: String,
         val sort: Int,
         val title: String,
-        val url: Any
+        val url: String
     )
 }
 

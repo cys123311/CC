@@ -62,6 +62,9 @@
     白色半透明：#80FFFFFF
     红色30%透明：#4Dca0d0d
 -->
+    <color name="blackbantouming">#80000000</color><!--    黑色半透明：#80000000-->
+    <color name="blackquantouming">#00000000</color><!--    黑色全透明：#00000000-->
+    <color name="whitebantouming">#80FFFFFF</color><!--    白色半透明：#80FFFFFF-->
 
     <color name="black">#000</color>
     <color name="white">#fff</color>
@@ -71,5 +74,9 @@
     <!--验证码-->
     <color name="transparent">#00000000</color>
     <color name="translucent_white">#ddd</color>
+
+    <color name="tabColor">#848484</color>
+    <color name="main_color">#008000</color>
+    <color name="colorGray">#333</color>
 
 </resources>

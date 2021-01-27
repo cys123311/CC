@@ -9,6 +9,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import com.sprout.utils.MyMmkv
 
 class App : Application() {
 
@@ -25,6 +26,7 @@ class App : Application() {
         super.onCreate()
         instance = this
         DEBUG = true
+        MyMmkv.initMMKV()
     }
 
     init {
