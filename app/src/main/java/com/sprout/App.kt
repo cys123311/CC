@@ -27,6 +27,8 @@ class App : Application() {
         instance = this
         DEBUG = true
         MyMmkv.initMMKV()
+
+
     }
 
     init {

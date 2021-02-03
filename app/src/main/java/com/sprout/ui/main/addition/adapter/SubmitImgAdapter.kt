@@ -24,11 +24,14 @@ class SubmitImgAdapter(context:Activity,val list :List<ImgData>) :
         }else{
             img.setImageURI(Uri.parse(t.path))
         }
+
         imgDelete.tag = t
         img.setOnClickListener {
             if(t.path.isNullOrEmpty()) return@setOnClickListener
             imgDelete.visibility = if (imgDelete.visibility == View.GONE) View.VISIBLE else View.GONE
         }
+
+        //点击 删除标记隐藏 再次点击 显示
         imgDelete.setOnClickListener {
             imgDelete.visibility = View.GONE
             clickEvt.clickDelete(imgDelete.tag as ImgData)

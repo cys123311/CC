@@ -19,8 +19,6 @@ class GoodAdapter : BaseQuickAdapter<GoodData.Data,
         holder: BaseDataBindingHolder<AdapterGoodItemBinding>,
         item: GoodData.Data
     ) {
-        val goodItemBinding = holder.dataBinding
-        if (goodItemBinding!=null)
-            goodItemBinding.goodData = item
+       holder.dataBinding!!.goodData=item
     }
 }

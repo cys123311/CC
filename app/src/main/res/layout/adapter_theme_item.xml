@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="theme"
+            type="com.sprout.ui.main.addition.bean.LZThemeBean" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/line_theme"
+        android:layout_marginVertical="@dimen/dp_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_theme"
+                android:layout_marginHorizontal="@dimen/dp_24"
+                android:layout_alignParentLeft="true"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:background="@mipmap/theme_son"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_theme"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:text="@{theme.name}"
+                android:textSize="@dimen/sp_16" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:layout_marginVertical="@dimen/dp_5"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"/>
+    </LinearLayout>
+</layout>

@@ -17,7 +17,6 @@ import com.sprout.ui.main.home.fragment.RecommendFragment
 
 class HomeFragment : BaseFragment<HomeFraViewModel,FragmentHomeBinding>() {
 
-
     override fun initView() {
         //初始化fragmentList
         vm.fragmentInit()

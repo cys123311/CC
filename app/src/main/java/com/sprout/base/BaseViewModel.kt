@@ -133,5 +133,4 @@ open class BaseViewModel : ViewModel() {
             }
         }
     }
-
 }

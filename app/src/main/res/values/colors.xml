@@ -12,6 +12,7 @@
     <color name="colorD">#00ffffff</color>
     <color name="colorE">#F85D2C</color>
     <color name="colorF">#07AC0E</color>
+    <color name="colorG">#F8E3E3</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
@@ -69,6 +70,7 @@
     <color name="black">#000</color>
     <color name="white">#fff</color>
     <color name="green_home">#80A55F</color>
+    <color name="green">#BAD1A4</color>
     <color name="white_lucency">#80FFFFFF</color>
 
     <!--验证码-->
@@ -78,5 +80,7 @@
     <color name="tabColor">#848484</color>
     <color name="main_color">#008000</color>
     <color name="colorGray">#333</color>
+    <color name="colorBlack666">#666</color>
+    <color name="colorBlack333">#333</color>
 
 </resources>

@@ -3,89 +3,279 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/group_view"
     android:layout_height="match_parent"
     tools:context=".ui.main.addition.SubmitMoreActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/image_release_close"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/card_line"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@mipmap/titlebar_cancel" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_line"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_title"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_60"
-                app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/txt_submit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:text="发布"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/txt_release_btn"
+        android:layout_width="65dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/shape_green_lucency_bk_10"
+        android:gravity="center"
+        android:text="发布"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/image_release_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_release_close" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyImgs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/layout_title" />
+    <TextView
+        android:id="@+id/txt_save_release"
+        android:layout_width="65dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="6dp"
+        android:background="@drawable/shape_save_release"
+        android:gravity="center"
+        android:text="存草稿"
+        android:textColor="@color/colorBlack333"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/txt_release_btn"
+        app:layout_constraintEnd_toStartOf="@+id/txt_release_btn" />
 
-            <EditText
-                android:id="@+id/edit_title"
-                android:maxLines="1"
-                android:paddingHorizontal="@dimen/dp_20"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_50" />
 
-            <EditText
-                android:id="@+id/edit_mood"
-                android:maxLines="3"
-                android:paddingHorizontal="@dimen/dp_20"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_100" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_release_img"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_line" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40">
+    <EditText
+        android:id="@+id/edit_release_title"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:fontFamily="sans-serif-thin"
+        android:hint="写下标题收货更多的赞哦~"
+        android:maxLines="20"
+        android:padding="0dp"
+        android:textColor="@color/colorBlack333"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_release_img" />
 
-                <TextView
-                    android:id="@+id/txt_theme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="添加主题"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0.6dp"
+        android:background="@color/colorBlack333"
+        app:layout_constraintEnd_toEndOf="@id/edit_release_title"
+        app:layout_constraintStart_toStartOf="@id/edit_release_title"
+        app:layout_constraintTop_toBottomOf="@id/edit_release_title" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40">
+    <EditText
+        android:id="@+id/edit_release_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:fontFamily="sans-serif-thin"
+        android:hint="此时此刻感想..."
+        android:maxLines="100"
+        android:padding="0dp"
+        android:textColor="@color/colorBlack333"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_release_title" />
 
-                <TextView
-                    android:id="@+id/txt_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="你的位置"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/line1"
+        android:layout_width="0dp"
+        android:layout_height="0.3dp"
+        android:layout_marginTop="120dp"
+        android:background="@color/colorBlack333"
+        app:layout_constraintEnd_toEndOf="@id/edit_release_title"
+        app:layout_constraintStart_toStartOf="@id/edit_release_title"
+        app:layout_constraintTop_toTopOf="@id/edit_release_content"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <HorizontalScrollView
-                android:id="@+id/layout_address"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_50" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    <TextView
+        android:id="@+id/line2"
+        android:layout_width="0dp"
+        android:layout_height="0.3dp"
+        android:layout_marginTop="48dp"
+        android:background="@color/colorBlack333"
+        app:layout_constraintEnd_toEndOf="@id/edit_release_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/edit_release_title"
+        app:layout_constraintTop_toTopOf="@id/line1" />
+
+    <TextView
+        android:id="@+id/line3"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/colorBlack333"
+        app:layout_constraintEnd_toEndOf="@id/edit_release_title"
+        app:layout_constraintStart_toStartOf="@id/edit_release_title"
+        app:layout_constraintTop_toBottomOf="@id/line2" />
+
+    <TextView
+        android:id="@+id/line4"
+        android:layout_width="0dp"
+        android:layout_height="0.6dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/colorBlack333"
+        app:layout_constraintEnd_toEndOf="@id/edit_release_title"
+        app:layout_constraintStart_toStartOf="@id/edit_release_title"
+        app:layout_constraintTop_toBottomOf="@id/line3" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/line2"
+        app:layout_constraintStart_toStartOf="@id/line1"
+        app:layout_constraintTop_toTopOf="@+id/line1"
+        app:srcCompat="@mipmap/publish_topic_highlight"
+        tools:layout_editor_absoluteX="2dp" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/line3"
+        app:layout_constraintStart_toStartOf="@id/line2"
+        app:layout_constraintTop_toTopOf="@+id/line2"
+        app:srcCompat="@mipmap/theme_son"
+        tools:layout_editor_absoluteX="2dp" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/line4"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
+        app:layout_constraintTop_toBottomOf="@+id/line3"
+        app:srcCompat="@mipmap/publish_location_highlight" />
+
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="选择频道"
+        android:textColor="@color/colorBlack333"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/imageView2"
+        app:layout_constraintStart_toEndOf="@id/imageView2"
+        app:layout_constraintTop_toTopOf="@id/imageView2"/>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="添加主题"
+        android:textColor="@color/colorBlack333"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/imageView3"
+        app:layout_constraintStart_toEndOf="@id/imageView3"
+        app:layout_constraintTop_toTopOf="@id/imageView3" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="你的位置"
+        android:textColor="@color/colorBlack333"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/line4"
+        app:layout_constraintStart_toEndOf="@id/imageView3"
+        app:layout_constraintTop_toBottomOf="@+id/line3" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        app:layout_constraintBottom_toTopOf="@+id/line4"
+        app:layout_constraintEnd_toEndOf="@+id/line4"
+        app:layout_constraintTop_toBottomOf="@+id/line3"
+        app:srcCompat="@mipmap/discovery_header_arrow" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        app:layout_constraintBottom_toBottomOf="@+id/line3"
+        app:layout_constraintEnd_toEndOf="@+id/line4"
+        app:layout_constraintTop_toTopOf="@+id/line2"
+        app:srcCompat="@mipmap/discovery_header_arrow" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        app:layout_constraintBottom_toBottomOf="@+id/line2"
+        app:layout_constraintEnd_toEndOf="@+id/line2"
+        app:layout_constraintTop_toTopOf="@+id/line1"
+        app:srcCompat="@mipmap/discovery_header_arrow" />
+
+
+    <TextView
+        android:id="@+id/btn_release_address"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/line4"
+        app:layout_constraintEnd_toEndOf="@+id/line4"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/line4"
+        app:layout_constraintTop_toBottomOf="@+id/line3"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/btn_release_append_theme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_release_address"
+        app:layout_constraintEnd_toEndOf="@+id/line4"
+        app:layout_constraintStart_toStartOf="@+id/line4"
+        app:layout_constraintTop_toTopOf="@+id/line2" />
+
+    <TextView
+        android:id="@+id/btn_release_channel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_release_append_theme"
+        app:layout_constraintEnd_toEndOf="@+id/line1"
+        app:layout_constraintStart_toStartOf="@+id/line1"
+        app:layout_constraintTop_toTopOf="@+id/line1" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

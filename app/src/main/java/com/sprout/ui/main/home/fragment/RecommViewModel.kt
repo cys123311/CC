@@ -1,11 +1,9 @@
 package com.sprout.ui.main.home.fragment
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.sprout.base.BaseViewModel
-import com.sprout.ui.main.home.bean.LZChannelBean
-import com.sprout.ui.main.home.bean.LZThemeBean
+import com.sprout.ui.main.addition.bean.LZThemeBean
 
 class RecommViewModel :BaseViewModel() {
 

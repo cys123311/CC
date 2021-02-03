@@ -9,10 +9,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,7 +135,7 @@ public class LocationUtils {
     }
 
     //获取经纬度
-    private void showLocation() {
+    public void showLocation() {
         if(location == null){
             getLocation();
         }else {
@@ -229,4 +232,6 @@ public class LocationUtils {
         void onGetAddress(Address address);
         void onGetLocation(double lat,double lng);
     }
+
+
 }

@@ -114,7 +114,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
         if (loadingDialog == null) {
             loadingDialog = ProgressDialog(this)
         }
-        loadingDialog!!.show()
+//        loadingDialog!!.show()
     }
 
     fun dismissLoading() {

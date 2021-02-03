@@ -1,6 +1,5 @@
 package com.sprout.ui.main.home.fragment
 
-
 import com.sprout.api.ext.bindReCommendViewPager2
 import com.sprout.api.ext.init
 import com.sprout.base.BaseFragment

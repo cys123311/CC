@@ -3,6 +3,8 @@ package com.sprout.api
 class URLConstant {
     companion object {
 
+        const val token = "token"
+
         private const val BASE_URL_DEBUG: String = "http://sprout.cdwan.cn/"
         private const val BASE_URL_RELEASE: String = "http://sprout.cdwan.cn/"
 

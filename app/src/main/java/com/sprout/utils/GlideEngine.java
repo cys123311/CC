@@ -73,7 +73,7 @@ import com.sprout.R;
 
 
 
-public class GlideEngine implements ImageEngine {
+public  class GlideEngine implements ImageEngine {
 
 
 

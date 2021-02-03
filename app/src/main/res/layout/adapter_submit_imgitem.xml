@@ -3,41 +3,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="submitData"
             type="com.sprout.ui.main.addition.bean.ImgData" />
+
         <variable
             name="submitImgClick"
             type="com.sprout.api.IItemClick" />
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:onClick="@{(view)->submitImgClick.itemClick(view.tag)}"
-        android:layout_height="wrap_content">
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/dp_5"
+        app:cardUseCompatPadding="true">
 
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="@dimen/dp_70"
-            android:layout_height="@dimen/dp_70"
-            android:scaleType="centerCrop"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+        <FrameLayout
+            android:layout_marginVertical="@dimen/dp_5"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            android:onClick="@{(view)->submitImgClick.itemClick(view.tag)}">
 
-        <ImageView
-            android:id="@+id/img_delete"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
-            android:src="@mipmap/ic_delete"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginRight="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_5"
-            android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/img"
+                android:layout_marginVertical="@dimen/dp_5"
+                android:layout_gravity="center|bottom"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:scaleType="centerCrop" />
 
+            <ImageView
+                android:layout_gravity="right"
+                android:id="@+id/img_delete"
+                android:visibility="gone"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:src="@mipmap/opinion_image_delete" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

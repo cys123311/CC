@@ -9,6 +9,7 @@ data class ImgData(
         var tags:MutableList<Tag>
 ) {
     data class Tag(
+            var id :Int,
             var x: Float,
             var y: Float,
             var type: Int,

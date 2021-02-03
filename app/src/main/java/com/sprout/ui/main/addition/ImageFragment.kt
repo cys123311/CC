@@ -48,9 +48,9 @@ class ImageFragment (
             ConstraintLayout.LayoutParams.WRAP_CONTENT,
             ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
-        param.setMargins(0, 0, 0, 0) //控制组件的坐标位置
+        param.setMargins(100, 100, 100, 100) //控制组件的坐标位置
         view.setOnTouchListener(layout_tags)
-        var tag = ImgData.Tag(0f, 0f, type, name, 0.0, 0.0)
+        val tag = ImgData.Tag(0, 0f,0f, type, name, 0.0, 0.0)
         tags.add(tag)
         view.tag = tag
         layout_tags.addView(view, param)
