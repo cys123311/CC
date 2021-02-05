@@ -2,9 +2,10 @@ package com.sprout.ui.main.home.fragment
 
 import com.sprout.base.BaseFragment
 import com.sprout.databinding.FragmentSubRecommendBinding
+import com.sprout.ui.main.home.HomeFraViewModel
 
 class SubRecommendFragment :
-    BaseFragment<RecommViewModel, FragmentSubRecommendBinding>() {
+    BaseFragment<HomeFraViewModel, FragmentSubRecommendBinding>() {
 
     override fun initView() {
 

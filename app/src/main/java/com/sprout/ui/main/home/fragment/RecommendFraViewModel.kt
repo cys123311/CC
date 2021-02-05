@@ -1,15 +1,9 @@
 package com.sprout.ui.main.home.fragment
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import com.sprout.base.BaseViewModel
-import com.sprout.ui.main.addition.bean.LZThemeBean
 
-class RecommViewModel :BaseViewModel() {
-
-
-    //主题数据 sprout.cdwan.cn/api/theme/getTheme 主题数据
-    var theme: MutableLiveData<LZThemeBean> = MutableLiveData()
+class RecommendFraViewModel :BaseViewModel() {
 
     val tapTitles = arrayListOf<String>(
         "精选",

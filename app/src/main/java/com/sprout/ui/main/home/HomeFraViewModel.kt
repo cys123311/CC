@@ -1,7 +1,9 @@
 package com.sprout.ui.main.home
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import com.sprout.base.BaseViewModel
+import com.sprout.ui.main.home.bean.LZTrendsData
 import com.sprout.ui.main.home.fragment.CityFragment
 import com.sprout.ui.main.home.fragment.ConcernFragment
 import com.sprout.ui.main.home.fragment.RecommendFragment
@@ -17,5 +19,13 @@ class HomeFraViewModel :BaseViewModel() {
             fragments.add(ConcernFragment())
             fragments.add(RecommendFragment())
         }
+    }
+
+    //获取动态数据 列表
+    var submitTrends: MutableLiveData<List<LZTrendsData>> = MutableLiveData()
+
+    fun getTrendsList(command:Int,page:Int,size :Int,channelid :Int,isShowLoading: Boolean) {
+        launch({ httpUtil.getTrendsList(command,
+            page,size,channelid) }, submitTrends, isShowLoading)
     }
 }

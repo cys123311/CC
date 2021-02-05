@@ -1,19 +1,32 @@
 package com.sprout.ui.main.addition
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupWindow
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.sdk.android.oss.ClientConfiguration
+import com.alibaba.sdk.android.oss.ClientException
+import com.alibaba.sdk.android.oss.OSSClient
+import com.alibaba.sdk.android.oss.ServiceException
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback
+import com.alibaba.sdk.android.oss.callback.OSSProgressCallback
+import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask
+import com.alibaba.sdk.android.oss.model.PutObjectRequest
+import com.alibaba.sdk.android.oss.model.PutObjectResult
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
@@ -22,16 +35,15 @@ import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.core.PoiItem
 import com.amap.api.services.poisearch.PoiResult
 import com.amap.api.services.poisearch.PoiSearch
-import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.google.gson.Gson
 import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureConfig
-import com.luck.picture.lib.config.PictureMimeType
-import com.luck.picture.lib.tools.ToastUtils
 import com.sprout.R
-import com.sprout.api.IItemClick
+import com.sprout.api.URLConstant
+import com.sprout.api.URLConstant.Companion.bucketName
+import com.sprout.api.URLConstant.Companion.ossPoint
 import com.sprout.base.BaseActivity
 import com.sprout.databinding.ActivitySubmitMoreBinding
 import com.sprout.ui.main.addition.adapter.ChannelAdapter
@@ -39,15 +51,17 @@ import com.sprout.ui.main.addition.adapter.LocationAdapter
 import com.sprout.ui.main.addition.adapter.SubmitImgAdapter
 import com.sprout.ui.main.addition.adapter.ThemeAdapter
 import com.sprout.ui.main.addition.bean.ImgData
+import com.sprout.ui.main.addition.bean.LZChannelBean
 import com.sprout.ui.main.addition.bean.LZThemeBean
 import com.sprout.ui.main.addition.bean.LocationInfo
-import com.sprout.ui.main.addition.bean.LZChannelBean
-import com.sprout.utils.GlideEngine
+import com.sprout.utils.BitmapUtils
+import com.sprout.utils.PicSelectUtils
+import com.sprout.utils.PwUtils
 import com.sprout.utils.ToastUtil
 import com.sprout.widget.clicks
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.ArrayList
+import java.io.ByteArrayOutputStream
 
 /**
  * 动态数据的提交
@@ -70,29 +84,31 @@ class SubmitMoreActivity :
     var lat: Double = 0.0  //经度
     var lng: Double = 0.0  //纬度
 
-    var imgs: MutableList<ImgData> = mutableListOf()
+
     var max_img = 9
 
     //图片 适配器 060411
-    lateinit var imgAdapter: SubmitImgAdapter
+    val submitAdapter: SubmitImgAdapter by lazy { SubmitImgAdapter() }
+
+    //本地数据集合
+    var submitList: MutableList<ImgData> = mutableListOf()
+    //声明 oss 图片上传之后 图片路径
+    lateinit var ossClient : OSSClient
+    var imgs: MutableList<String> = mutableListOf()
 
 
     //声明 频道 pop 统一设置pop 宽高
-    var pWChannel = getPwXY()
-
+    var pWChannel = PwUtils.getPwXY()
     //声明 pop 频道适配器
     val channelAdapter: ChannelAdapter by lazy { ChannelAdapter() }
-
     //声明 pop 频道 数据源集合
     val channelList: MutableList<LZChannelBean> = mutableListOf()
 
 
     //声明 主题 pop  统一设置pop 宽高
-    var pWTheme = getPwXY()
-
+    var pWTheme = PwUtils.getPwXY()
     //声明 pop 主题适配器
     val themeAdapter: ThemeAdapter by lazy { ThemeAdapter() }
-
     //声明 pop 主题 数据源集合
     val themeList: MutableList<LZThemeBean> = mutableListOf()
 
@@ -102,7 +118,7 @@ class SubmitMoreActivity :
     lateinit var mLocationOption: AMapLocationClientOption
 
     //声明 定位 pop  统一设置pop 宽高
-    var pWLocation = getPwXY()
+    var pWLocation = PwUtils.getPwXY()
 
     //声明 定位适配器
     val locationAdapter: LocationAdapter by lazy { LocationAdapter() }
@@ -112,38 +128,47 @@ class SubmitMoreActivity :
 
 
     override fun initView() {
-        imgAdapter = SubmitImgAdapter(this, imgs)
-        v.recyclerReleaseImg.layoutManager = GridLayoutManager(this, 3)
-        v.recyclerReleaseImg.adapter = imgAdapter
-        imgAdapter.clickEvt = SubmitClickEvt()
-        /**
-         * item条目的点击
-         */
-        imgAdapter.itemClick {
-            //当前点击的是加号
-            if (it == imgs.size + 1) {
+        //初始化 OSS
+        initOss()
+
+        //图片 列表初始化
+        v.recyclerReleaseImg.apply {
+            layoutManager = GridLayoutManager(mContext, 3)
+            submitAdapter.setNewInstance(submitList)
+            adapter = submitAdapter
+        }
+
+        submitAdapter.setOnItemClickListener { adapter, view, position ->
+            //图片列表 item条目的点击
+            //当前点击的是加号  数组下标从0开始 故不需要加1 进行判断是否为加号
+            if (position == submitList.size - 1 &&
+                submitList[submitList.size - 1].path.isNullOrEmpty()
+            ) {
                 openPhoto()
+            } else if (!submitList[position].path.isNullOrEmpty()) {
+                val lineSubmitDelete = view.findViewById<ImageView>(R.id.line_submit_delete)
+                lineSubmitDelete.visibility =
+                    if (lineSubmitDelete.visibility == View.GONE) View.VISIBLE else View.GONE
             }
-            ToastUtil.showToast(mContext, "111")
-            Log.e("imgAdapter", "1")
         }
     }
 
     override fun initData() {
         if (intent.hasExtra("data")) {
-            var json = intent.getStringExtra("data")
+            val json = intent.getStringExtra("data")
             if (json!!.isNotEmpty()) {
                 val jsonArr = JSONArray(json)
                 for (i in 0 until jsonArr.length()) {
                     val imgData =
                         Gson().fromJson<ImgData>(jsonArr.getString(i), ImgData::class.java)
-                    imgs.add(imgData)
+                    submitList.add(imgData)
                 }
-                //处理加号
-                if (imgs.size < max_img) {
+                //处理加号 添加＋号
+                if (submitList.size < max_img) {
                     val imgData = ImgData(null, mutableListOf())
-                    imgs.add(imgData)
+                    submitList.add(imgData)
                 }
+                submitAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -174,7 +199,9 @@ class SubmitMoreActivity :
             location()
         }
 
-        //适配器 条目监听声明  频道、主题、地址
+        //适配器 条目监听声明   图片列表、频道、主题、地址
+        submitAdapter.addChildClickViewIds(R.id.line_submit_delete)
+        submitAdapter.setOnItemChildClickListener(this)
         channelAdapter.addChildClickViewIds(R.id.line_channel)
         channelAdapter.setOnItemChildClickListener(this)
         themeAdapter.addChildClickViewIds(R.id.line_theme)
@@ -186,15 +213,15 @@ class SubmitMoreActivity :
     override fun initVM() {
         //发布 是否成功
         vm.submit.observe(this, Observer {
-            Log.e("222",it.toString())
+            Log.e("222", it.toString())
             when (it.errno) {
-                200 -> {
+                0 -> {
                     //发布成功 关闭本页面
                     finish()
                 }
-                -1 -> {
-                    //发布失败吐司提示原因
-                    ToastUtil.showToast(mContext,it.errmsg)
+                602 -> {
+                    //token 过期 未登录
+                    ToastUtil.showToast(mContext, it.errmsg)
                 }
             }
         })
@@ -212,11 +239,98 @@ class SubmitMoreActivity :
         })
     }
 
+    /**
+     *初始化OSS
+     */
+    fun initOss() {
+        val credentialProvider =
+            OSSStsTokenCredentialProvider(URLConstant.key, URLConstant.secret, "")
+        // 配置类如果不设置，会有默认配置。
+        val conf = ClientConfiguration()
+        conf.connectionTimeout = 15 * 1000; // 连接超时，默认15秒。
+        conf.socketTimeout = 15 * 1000; // socket超时，默认15秒。
+        conf.maxConcurrentRequest = 5; // 最大并发请求数，默认5个。
+        conf.maxErrorRetry = 2; // 失败后最大重试次数，默认2次。
+        ossClient = OSSClient(applicationContext, URLConstant.ossPoint, credentialProvider)
+    }
+
+    /**
+     * 获取 Oss 上传之后图片路径
+     */
+    private fun getOssUrl() {
+        for (i in submitList.indices) {
+            if(!submitList[i].path.isNullOrEmpty()){
+                val scaleBitmp = BitmapUtils.getScaleBitmap(
+                    submitList[i].path,
+                    URLConstant.HEAD_WIDTH, URLConstant.HEAD_HEIGHT
+                )
+                //Bitmap转字符串
+                val baas = ByteArrayOutputStream() // outputstream
+
+                scaleBitmp.compress(Bitmap.CompressFormat.PNG, 100, baas)
+                val apricot: ByteArray = baas.toByteArray() // 转为byte数组
+
+                val path = Base64.encodeToString(apricot, Base64.DEFAULT)
+                getOssLoadURL(path)
+            }
+        }
+    }
+
+    //获取 Oss 上传之后图片路径
+    fun getOssLoadURL(path: String) {
+        val fileName = path.substring(path.lastIndexOf("/") + 1, path.length)
+        val put = PutObjectRequest(URLConstant.bucketName, fileName, path)
+        put.progressCallback =
+            OSSProgressCallback<PutObjectRequest> { request, currentSize, totalSize ->
+                // 进度百分比的计算
+                // int p = (int) (currentSize/totalSize*100);
+                if (currentSize == totalSize) {
+                    //完成
+                    val headUrl = request.uploadFilePath
+                    //
+                    Log.i("HeadUrl", headUrl);
+                    //request.getUploadFilePath()
+                }
+            }
+        val task = ossClient.asyncPutObject(put,
+            object : OSSCompletedCallback<PutObjectRequest, PutObjectResult> {
+
+                override fun onSuccess(request: PutObjectRequest, result: PutObjectResult) {
+                    Log.d("PutObject", "UploadSuccess")
+                    Log.d("ETag", result.eTag)
+                    Log.d("RequestId", result.requestId)
+                    //成功的回调中读取相关的上传文件的信息  生成一个url地址
+                    val url =
+                        ossClient.presignPublicObjectURL(request.bucketName, request.objectKey)
+                    //TODO 刷新显示到界面上
+                    imgs.add(url)
+                }
+
+                override fun onFailure(
+                    request: PutObjectRequest?,
+                    clientException: ClientException?,
+                    serviceException: ServiceException?
+                ) {
+                    // 请求异常。  // 本地异常，如网络异常等。
+                    clientException?.printStackTrace()
+
+                    if (serviceException != null) {
+                        // 服务异常。
+                        Log.e("ErrorCode", serviceException.errorCode)
+                        Log.e("RequestId", serviceException.requestId)
+                        Log.e("HostId", serviceException.hostId)
+                        Log.e("RawMessage", serviceException.rawMessage)
+                    }
+                }
+            })
+    }
 
     /**
      * 组装提交的内容
      */
     fun getSubmitJson(): String {
+        //二次采样 上传服务器 获取服务器地址 进行组装数据 上传到接口 发布
+        getOssUrl()
         val title = v.editReleaseTitle.toString() //标题
         val mood = v.editReleaseContent.toString()  //内容 心情
         val theme = v.textView5.toString()   //主题 内容
@@ -235,11 +349,11 @@ class SubmitMoreActivity :
             1 -> { //图片
                 for (i in 0 until imgs.size) {
                     val img = JSONObject()
-                    img.put("url", imgs[i].path)
-                    val tags = JSONArray()
+                    img.put("url", imgs[i]) //oss 上传之后 图片路径
+                    val tags = JSONArray() //标签
                     img.put("tags", tags)
-                    for (j in 0 until imgs[i].tags.size) {
-                        val tagItem = imgs[i].tags[j]
+                    for (j in 0 until submitList[i].tags.size) {
+                        val tagItem = submitList[i].tags[j]
                         val tag = JSONObject()
                         tag.put("type", tagItem.type)
                         tag.put("id", tagItem.id)
@@ -261,23 +375,7 @@ class SubmitMoreActivity :
         return json.toString()
     }
 
-    //TODO item条目的点击
-    inner class ItemClick : IItemClick<ImgData> {
-        override fun itemClick(data: ImgData) {
-            //当前点击的是加号
-            if (data.path.isNullOrEmpty()) {
-                openPhoto()
-            }
-        }
-    }
 
-    //点击 删除图标 删除本条数据 刷新适配器 删除点击
-    inner class SubmitClickEvt {
-        fun clickDelete(data: ImgData) {
-            imgs.remove(data)
-            imgAdapter.notifyDataSetChanged()
-        }
-    }
 
 
     /**
@@ -294,14 +392,17 @@ class SubmitMoreActivity :
                 //头像的压缩和二次采样
                 //把选中的图片插入到列表
                 for (i in 0 until selectList.size) {
-                    var imgData = ImgData(selectList.get(i).path, mutableListOf())
-                    var index = imgs.size - 1
-                    imgs.add(index, imgData)
+                    val imgData = ImgData(selectList.get(i).path, mutableListOf())
+                    val index = submitList.size - 1
+                    submitList.add(index, imgData)
                 }
-                if (imgs.size > max_img) {
-//                    imgs.removeLast()
+                //处理加号 消失
+                if (submitList.size > max_img &&
+                    submitList[submitList.size - 1].path.isNullOrEmpty()
+                ) {
+                    submitList.removeAt(submitList.size - 1)
                 }
-                imgAdapter.notifyDataSetChanged()
+                submitAdapter.notifyDataSetChanged()
             }
 
             else -> {
@@ -312,104 +413,13 @@ class SubmitMoreActivity :
     /*当前还能插入的图片数量*/
     private fun openPhoto() {
         //当前还能插入的图片数量
-        val num = max_img - imgs.size + 1
-        PictureSelector.create(this)
-            .openGallery(PictureMimeType.ofImage())
-            .loadImageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
-            .maxSelectNum(num)
-            .imageSpanCount(3)
-            .selectionMode(PictureConfig.MULTIPLE)
-            .forResult(PictureConfig.CHOOSE_REQUEST)
+        val num = max_img - submitList.size + 1
+        PicSelectUtils.openPhoto(num, this)
     }
 
 
     /**
-     * 适配器条目监听
-     */
-    override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>, view: View, position: Int) {
-        when (view.id) {
-            R.id.line_channel -> {
-                //频道Id 赋值
-                channelId = channelList[position].id
-
-                //频道列表 条目监听
-                v.textView4.text = channelList[position].name
-                //关闭主题pop 恢复窗口透明度
-                pWChannel.dismiss()
-                initPwNo()
-            }
-            R.id.line_theme -> {
-                //主题Id 赋值
-                themeId = themeList[position].id
-
-                //主题列表 条目监听
-                v.textView5.text = themeList[position].name
-                //关闭主题pop 恢复窗口透明度
-                pWTheme.dismiss()
-                initPwNo()
-            }
-            R.id.line_location -> {
-                //地点列表 条目监听
-                v.textView6.text = locationList[position].address2
-                //关闭地址pop 恢复窗口透明度
-                pWLocation.dismiss()
-                initPwNo()
-            }
-        }
-    }
-
-    /**
-     * 获取频道
-     */
-    private fun obtainChannel(it: List<LZChannelBean>) {
-
-        //获取pop布局
-        val popupView = getPWView(R.mipmap.channel_head, channelAdapter)
-
-        //请求到数据 添加到 集合中
-        channelList.clear()
-        channelList.addAll(it)
-        //渲染数据
-        channelAdapter.setNewInstance(channelList)
-
-        //开启阴影
-        initPwYes()
-
-        //找到视图
-        pWChannel.contentView = popupView
-        pWChannel.isClippingEnabled = false
-
-        //在按钮的下方弹出  无偏移 第一种方式
-        pWChannel.showAtLocation(v.groupView, Gravity.BOTTOM, 0, 0) //开启弹窗
-    }
-
-
-    /**
-     * 获取主题
-     */
-    private fun obtainTheme(it: List<LZThemeBean>) {
-        //获取布局  实参 pop头部 图片  与 数据源 适配器
-        val popupView = getPWView(R.mipmap.theme, themeAdapter)
-
-        //请求到数据 添加到 集合中
-        themeList.clear()
-        themeList.addAll(it)
-        themeAdapter.setNewInstance(themeList)
-
-        //开启阴影
-        initPwYes()
-
-        //找到视图
-        pWTheme.contentView = popupView
-        pWTheme.isClippingEnabled = false
-
-        //在按钮的下方弹出  无偏移 第一种方式
-        pWTheme.showAtLocation(v.groupView, Gravity.BOTTOM, 0, 0) //开启弹窗
-    }
-
-
-    /**
-     * 关于定位
+     * 关于定位  初始化 定位
      */
     private fun location() {
         //初始化定位
@@ -420,38 +430,32 @@ class SubmitMoreActivity :
         //初始化定位参数
         mLocationOption = AMapLocationClientOption()
         //设置定位模式为Hight_Accuracy高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy)
+        mLocationOption.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
         //设置是否只定位一次,默认为false
-        mLocationOption.setOnceLocation(true)
+        mLocationOption.isOnceLocation = true
         //给定位客户端对象设置定位参数
         mLocationClient.setLocationOption(mLocationOption)
         //启动定位
         mLocationClient.startLocation()
     }
 
+    /**
+     * 高德地图检索周边地址
+     */
     @SuppressLint("HardwareIds")
     override fun onLocationChanged(p0: AMapLocation) {
         lat = p0.latitude //获取纬度
         lng = p0.longitude //获取经度
-        //获取经纬度
-        setSearchApi(lat, lng)
-    }
-
-    /**
-     * 高德地图检索周边地址
-     */
-    fun setSearchApi(wei: Double, jing: Double) {
+        //根据经纬度检索
         val query: PoiSearch.Query = PoiSearch.Query("", "", "")
         query.pageSize = 20 //检索个数
         val search = PoiSearch(mContext, query)
-        search.bound = PoiSearch.SearchBound(LatLonPoint(wei, jing), 10000)
+        search.bound = PoiSearch.SearchBound(LatLonPoint(lat, lng), 10000)
         search.setOnPoiSearchListener(this)
         search.searchPOIAsyn()
     }
 
-    override fun onPoiItemSearched(p0: PoiItem?, p1: Int) {
-
-    }
+    override fun onPoiItemSearched(p0: PoiItem?, p1: Int) {}
 
     override fun onPoiSearched(result: PoiResult?, postion: Int) {
         val list: MutableList<LocationInfo> = mutableListOf()
@@ -477,32 +481,7 @@ class SubmitMoreActivity :
     }
 
     /**
-     * 展示位置 pop
-     */
-    private fun obtainLocation(list: MutableList<LocationInfo>) {
-
-        val popupView = getPWView(R.mipmap.great, locationAdapter)
-
-        //请求到数据 添加到 集合中
-        locationList.clear()
-        locationList.addAll(list)
-        //渲染数据
-        locationAdapter.setNewInstance(locationList)
-
-        //开启阴影
-        initPwYes()
-
-        //找到视图
-        pWLocation.contentView = popupView
-        pWLocation.isClippingEnabled = false
-
-        //在按钮的下方弹出  无偏移 第一种方式
-        pWLocation.showAtLocation(v.groupView, Gravity.BOTTOM, 0, 0) //开启弹窗
-    }
-
-
-    /**
-     *     统一设置 pop 布局
+     *  统一设置 pop 布局
      */
     private fun getPWView(head: Int, mAdapter: BaseQuickAdapter<*, *>): View {
         val popupView: View = LayoutInflater.from(mContext)
@@ -522,23 +501,127 @@ class SubmitMoreActivity :
         return popupView
     }
 
-    //统一设置 pop布局 宽高
-    private fun getPwXY(): PopupWindow {
-        return PopupWindow(ViewGroup.LayoutParams.MATCH_PARENT, 600)
+    /**
+     * 展示位置 pop
+     */
+    private fun obtainLocation(list: MutableList<LocationInfo>) {
+
+        val popupView = getPWView(R.mipmap.great, locationAdapter)
+
+        //请求到数据 添加到 集合中
+        locationList.clear()
+        locationList.addAll(list)
+        //渲染数据
+        locationAdapter.setNewInstance(locationList)
+
+        //开启阴影
+        PwUtils.openShadow(window)
+
+        //找到视图
+        pWLocation.contentView = popupView
+        pWLocation.isClippingEnabled = false
+
+        //在按钮的下方弹出  无偏移 第一种方式
+        pWLocation.showAtLocation(v.groupView, Gravity.BOTTOM, 0, 0) //开启弹窗
     }
 
-    //开启阴影
-    private fun initPwYes() {
-        val attributes = window.attributes
-        attributes.alpha = 0.8f
-        window.attributes = attributes
+
+    /**
+     * 获取频道
+     */
+    private fun obtainChannel(it: List<LZChannelBean>) {
+
+        //获取pop布局
+        val popupView = getPWView(R.mipmap.channel_head, channelAdapter)
+
+        //请求到数据 添加到 集合中
+        channelList.clear()
+        channelList.addAll(it)
+        //渲染数据
+        channelAdapter.setNewInstance(channelList)
+
+        //开启阴影
+        PwUtils.openShadow(window)
+
+        //找到视图
+        pWChannel.contentView = popupView
+        pWChannel.isClippingEnabled = false
+
+        //在按钮的下方弹出  无偏移 第一种方式
+        pWChannel.showAtLocation(v.groupView, Gravity.BOTTOM, 0, 0) //开启弹窗
     }
 
-    //关闭阴影
-    private fun initPwNo() {
-        //关闭阴影
-        val attributes = window.attributes
-        attributes.alpha = 1f
-        window.attributes = attributes
+
+    /**
+     * 获取主题
+     */
+    private fun obtainTheme(it: List<LZThemeBean>) {
+        //获取布局  实参 pop头部 图片  与 数据源 适配器
+        val popupView = getPWView(R.mipmap.theme, themeAdapter)
+
+        //请求到数据 添加到 集合中
+        themeList.clear()
+        themeList.addAll(it)
+        themeAdapter.setNewInstance(themeList)
+
+        //开启阴影
+        PwUtils.openShadow(window)
+
+        //找到视图
+        pWTheme.contentView = popupView
+        pWTheme.isClippingEnabled = false
+
+        //在按钮的下方弹出  无偏移 第一种方式
+        pWTheme.showAtLocation(v.groupView, Gravity.BOTTOM, 0, 0) //开启弹窗
     }
+
+    /**
+     * 适配器条目监听
+     */
+    override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>, view: View, position: Int) {
+        when (view.id) {
+            R.id.line_submit_delete -> {
+                //点击 删除标记隐藏 再次点击 显示  //局部刷新
+                submitList.removeAt(position)
+
+                //处理加号  判断是否需要 添加＋号
+                if (submitList.size < max_img &&
+                    !submitList[submitList.size - 1].path.isNullOrEmpty()
+                ) {
+
+                    val imgData = ImgData(null, mutableListOf())
+                    submitList.add(imgData)
+                }
+                submitAdapter.notifyItemRemoved(position)
+            }
+            R.id.line_channel -> {
+                //频道Id 赋值
+                channelId = channelList[position].id
+
+                //频道列表 条目监听
+                v.textView4.text = channelList[position].name
+                //关闭主题pop 恢复窗口透明度
+                pWChannel.dismiss()
+                PwUtils.closeShadow(window)
+            }
+            R.id.line_theme -> {
+                //主题Id 赋值
+                themeId = themeList[position].id
+
+                //主题列表 条目监听
+                v.textView5.text = themeList[position].name
+                //关闭主题pop 恢复窗口透明度
+                pWTheme.dismiss()
+                PwUtils.closeShadow(window)
+            }
+            R.id.line_location -> {
+                //地点列表 条目监听
+                v.textView6.text = locationList[position].address2
+                //关闭地址pop 恢复窗口透明度
+                pWLocation.dismiss()
+                PwUtils.closeShadow(window)
+            }
+        }
+    }
+
 }

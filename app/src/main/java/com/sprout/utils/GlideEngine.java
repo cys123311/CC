@@ -1,5 +1,6 @@
 package com.sprout.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
@@ -17,6 +18,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
 
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.listener.OnImageCompleteCallback;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -74,8 +78,6 @@ import com.sprout.R;
 
 
 public  class GlideEngine implements ImageEngine {
-
-
 
     /**
      * 加载图片

@@ -8,7 +8,7 @@ import com.sprout.databinding.FragmentRecommendBinding
 
 //推荐 频道
 class RecommendFragment :
-    BaseFragment<RecommendViewModel, FragmentRecommendBinding>() {
+    BaseFragment<RecommendFraViewModel, FragmentRecommendBinding>() {
 
     override fun initView() {
 

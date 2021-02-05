@@ -40,16 +40,6 @@ class RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(URLConstant.BASE_URL)
             .build()
-
-        interceptor = Interceptor { chain ->
-            val request = chain.request()
-                .newBuilder()
-                .addHeader("charset", "UTF-8")
-                .addHeader("sprout-token", MyMmkv.getString(URLConstant.token))
-                .build()
-
-            chain.proceed(request)
-        }
     }
 
     private fun getOkHttpClient(): OkHttpClient {
@@ -58,7 +48,6 @@ class RetrofitClient {
             .writeTimeout(60, TimeUnit.SECONDS)
             .cookieJar(cookieJar)
             .addInterceptor(LoggingInterceptor())
-//            .addInterceptor(interceptor) //添加自定义拦截器
             .sslSocketFactory(SSLContextSecurity.createIgnoreVerifySSL("TLS"))
             .build()
     }

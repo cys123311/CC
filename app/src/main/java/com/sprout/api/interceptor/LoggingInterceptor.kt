@@ -1,9 +1,12 @@
 package com.sprout.api.interceptor
 
+import android.util.Log
 import com.sprout.api.URLConstant
+import com.sprout.api.retrofit.RetrofitClient
 import com.sprout.utils.LogUtil.showHttpApiLog
 import com.sprout.utils.LogUtil.showHttpHeaderLog
 import com.sprout.utils.LogUtil.showHttpLog
+import com.sprout.utils.MyMmkv
 import okhttp3.Interceptor
 import okhttp3.RequestBody
 import okhttp3.Response
@@ -16,6 +19,10 @@ class LoggingInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+            .newBuilder()  //添加请求头
+            .addHeader("sprout-token", MyMmkv.getString(URLConstant.token))
+            .build()
+        Log.e("token", MyMmkv.getString(URLConstant.token)+"")
         val httpUrl = request.url()
         val t1 = System.nanoTime() //请求发起的时间
         val response = chain.proceed(request)
@@ -28,7 +35,6 @@ class LoggingInterceptor : Interceptor {
         ) {
             return response
         }
-
         var api = httpUrl.toString().replace(URLConstant.BASE_URL, "")
         if (api.contains("?")) {
             api = api.substring(0, api.indexOf("?"))

@@ -1,40 +1,37 @@
 package com.sprout.ui.main.addition.adapter
 
-import android.app.Activity
-import android.net.Uri
 import android.view.View
-import android.widget.ImageView
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
 import com.sprout.R
-import com.sprout.base.BaseAdapter
 import com.sprout.databinding.AdapterSubmitImgitemBinding
-import com.sprout.ui.main.addition.SubmitMoreActivity
+
 import com.sprout.ui.main.addition.bean.ImgData
+import com.sprout.utils.PicSelectUtils
 
-class SubmitImgAdapter(context:Activity,val list :List<ImgData>) :
-    BaseAdapter<AdapterSubmitImgitemBinding,ImgData>
-        (context,list){
-    lateinit var clickEvt: SubmitMoreActivity.SubmitClickEvt
+class SubmitImgAdapter :
+BaseQuickAdapter<ImgData,BaseDataBindingHolder<AdapterSubmitImgitemBinding>>
+    (R.layout.adapter_submit_imgitem){
 
-    override fun convert(v: AdapterSubmitImgitemBinding, t: ImgData, position: Int) {
-        val img = v.root.findViewById<ImageView>(R.id.img)
-        val imgDelete = v.root.findViewById<ImageView>(R.id.img_delete)
-        if(t.path.isNullOrEmpty()){
-            img.setImageResource(R.drawable.ic_addimg)
-            imgDelete.visibility = View.GONE
-        }else{
-            img.setImageURI(Uri.parse(t.path))
+    override fun convert(
+        holder: BaseDataBindingHolder<AdapterSubmitImgitemBinding>,
+        item: ImgData
+    ) {
+        val  bind = holder.dataBinding
+        if(bind!=null){
+            if(item.path.isNullOrEmpty()){ //数据为空
+                //添加 图片 标记 隐藏
+                bind.lineSubmitImg.setImageResource(R.drawable.ic_addimg)
+                bind.lineSubmitDelete.visibility = View.GONE
+            }else{
+                bind.submitData = item
+            }
+
+//            bind.lineSubmitImg.setOnClickListener {
+//                if(!item.path.isNullOrEmpty())
+//                bind.lineSubmitDelete.visibility = if (bind.lineSubmitDelete.visibility == View.GONE) View.VISIBLE else View.GONE
+//            }
         }
 
-        imgDelete.tag = t
-        img.setOnClickListener {
-            if(t.path.isNullOrEmpty()) return@setOnClickListener
-            imgDelete.visibility = if (imgDelete.visibility == View.GONE) View.VISIBLE else View.GONE
-        }
-
-        //点击 删除标记隐藏 再次点击 显示
-        imgDelete.setOnClickListener {
-            imgDelete.visibility = View.GONE
-            clickEvt.clickDelete(imgDelete.tag as ImgData)
-        }
     }
 }

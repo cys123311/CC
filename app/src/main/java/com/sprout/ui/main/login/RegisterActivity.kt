@@ -75,6 +75,7 @@ class RegisterActivity :
                         it.token?.let { it1 ->
                             MyMmkv.setValue(URLConstant.token, it1)
                             MyMmkv.setValue("long", true)
+                            Log.e("token",MyMmkv.getString(URLConstant.token)+"")
                         }
 
                         ToastUtil.showToast(mContext, "登录成功！")

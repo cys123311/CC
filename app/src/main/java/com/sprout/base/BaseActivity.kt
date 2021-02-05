@@ -114,7 +114,11 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
         if (loadingDialog == null) {
             loadingDialog = ProgressDialog(this)
         }
-//        loadingDialog!!.show()
+
+        //xActivity即为本界面的Activity
+        if (!isFinishing){
+            loadingDialog!!.show()
+        }
     }
 
     fun dismissLoading() {
