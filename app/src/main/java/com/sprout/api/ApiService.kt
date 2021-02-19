@@ -1,11 +1,8 @@
 package com.sprout.api
 
 import com.sprout.api.response.BaseResult
-import com.sprout.ui.main.addition.bean.BrandData
-import com.sprout.ui.main.addition.bean.GoodData
-import com.sprout.ui.main.addition.bean.LZSubmitTrends
-import com.sprout.ui.main.addition.bean.LZChannelBean
-import com.sprout.ui.main.addition.bean.LZThemeBean
+import com.sprout.ui.main.addition.bean.*
+import com.sprout.ui.main.home.bean.LZChannelBean
 import com.sprout.ui.main.home.bean.LZTrendsData
 import com.sprout.ui.main.login.bean.RegisterMessage
 import com.sprout.utils.MyMmkv
@@ -46,7 +43,7 @@ interface ApiService {
 
     //频道数据 sprout.cdwan.cn/api/channel/channel
     @GET("api/channel/channel")
-    suspend fun getChannel(): BaseResult<List<LZChannelBean>>
+    suspend fun getChannelTab(): BaseResult<List<LZChannelBean>>
 
     //主题数据 sprout.cdwan.cn/api/theme/getTheme 主题数据
     @GET("api/theme/getTheme")

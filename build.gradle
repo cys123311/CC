@@ -22,6 +22,9 @@ allprojects {
         maven { url "https://jitpack.io" }
         maven { url "http://repo.pageturner-reader.org" }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+
+        //音乐
+        maven{url 'https://dl.bintray.com/lizixian/MusicLibrary'}
     }
 }
 

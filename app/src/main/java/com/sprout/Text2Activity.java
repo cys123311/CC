@@ -1,7 +1,9 @@
 package com.sprout;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.amap.api.maps2d.AMap;
@@ -21,12 +23,19 @@ public class Text2Activity extends AppCompatActivity {
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
 
+
 //初始化地图控制器对象
         AMap aMap = null;
         if (aMap == null) {
             aMap = mMapView.getMap();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

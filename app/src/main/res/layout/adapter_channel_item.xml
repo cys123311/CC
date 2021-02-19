@@ -4,7 +4,7 @@
     <data>
         <variable
             name="channel"
-            type="com.sprout.ui.main.addition.bean.LZChannelBean" />
+            type="com.sprout.ui.main.home.bean.LZChannelBean" />
     </data>
 
     <LinearLayout

@@ -9,6 +9,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
@@ -38,7 +39,8 @@ import org.json.JSONObject
  * 动态页面图片的编辑
  */
 class AdditionActivity :
-    BaseActivity<AdditionViewModel, ActivityAdditionBinding>() , OnItemChildClickListener {
+    BaseActivity<AdditionViewModel, ActivityAdditionBinding>() ,
+    OnItemChildClickListener {
 
     //记录上一个初始化的tag
     lateinit var lastTagText: TextView
@@ -217,6 +219,7 @@ class AdditionActivity :
                     val intent = Intent(mContext,SubmitMoreActivity::class.java)
                     intent.putExtra("data",decodeImgs())
                     startActivity(intent)
+                    finish()
                 }
             }
         }

@@ -2,6 +2,8 @@ package com.sprout.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,8 +53,10 @@ public class BitmapUtils {
     public static byte[] getBytesByBitmap(Bitmap bitmap){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = baos.toByteArray(); // 转为byte数组
         return data;
+        //byte 转 String
+        //val path = Base64.encodeToString(data, Base64.DEFAULT)
     }
 
 }

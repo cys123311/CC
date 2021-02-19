@@ -26,11 +26,6 @@ BaseQuickAdapter<ImgData,BaseDataBindingHolder<AdapterSubmitImgitemBinding>>
             }else{
                 bind.submitData = item
             }
-
-//            bind.lineSubmitImg.setOnClickListener {
-//                if(!item.path.isNullOrEmpty())
-//                bind.lineSubmitDelete.visibility = if (bind.lineSubmitDelete.visibility == View.GONE) View.VISIBLE else View.GONE
-//            }
         }
 
     }

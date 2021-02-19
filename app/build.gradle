@@ -45,6 +45,17 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+    tasks.withType(JavaCompile) {    //设置全局编码
+        options.encoding = "UTF-8"
+    }
+    tasks.withType(Javadoc) {  //设置文档编码
+        options {
+            encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/7/docs/api"
+        }
+    }
 }
 
 dependencies {
@@ -67,6 +78,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'com.google.android.material:material:1.2.1'
 
+
+    //pop弹窗库  这种弹窗从 1.0.0版本开始实现了优雅的手势交互和智能嵌套滚动
+    implementation 'com.lxj:xpopup:2.2.8'
+
     //指示器库
     implementation 'com.github.hackware1993:MagicIndicator:1.6.0'
     //高德定位
@@ -87,16 +102,16 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.3'
 
     //SplitEditText 一个灵活的分割编辑框
-    implementation 'com.king.view:splitedittext:1.0.0'
+//    implementation 'com.king.view:splitedittext:1.0.0'
 
     //侧滑删除 条目
-    implementation 'com.yanzhenjie:recyclerview-swipe:1.1.4'
+//    implementation 'com.yanzhenjie:recyclerview-swipe:1.1.4'
 
     //BannerViewPager
     implementation 'com.github.zhpanvip:BannerViewPager:3.4.0'
 
     //跑马灯
-    implementation 'com.xj.marqueeView:marqueeView:0.1.20'
+//    implementation 'com.xj.marqueeView:marqueeView:0.1.20'
 
     //mvvm 适配器
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'

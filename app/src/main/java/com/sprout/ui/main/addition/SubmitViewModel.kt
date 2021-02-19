@@ -2,7 +2,7 @@ package com.sprout.ui.main.addition
 
 import androidx.lifecycle.MutableLiveData
 import com.sprout.base.BaseViewModel
-import com.sprout.ui.main.addition.bean.LZChannelBean
+import com.sprout.ui.main.home.bean.LZChannelBean
 import com.sprout.ui.main.addition.bean.LZSubmitTrends
 import com.sprout.ui.main.addition.bean.LZThemeBean
 import okhttp3.MediaType
@@ -28,7 +28,7 @@ class SubmitViewModel : BaseViewModel() {
     val channel :MutableLiveData<List<LZChannelBean>> = MutableLiveData()
 
     fun getChannel(isShowLoading: Boolean){
-        launch({httpUtil.getChannel()},channel,isShowLoading)
+        launch({httpUtil.getChannelTab()},channel,isShowLoading)
     }
 
     //主题数据

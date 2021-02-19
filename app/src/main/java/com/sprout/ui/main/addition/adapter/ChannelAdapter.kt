@@ -4,7 +4,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
 import com.sprout.R
 import com.sprout.databinding.AdapterChannelItemBinding
-import com.sprout.ui.main.addition.bean.LZChannelBean
+import com.sprout.ui.main.home.bean.LZChannelBean
 
 class ChannelAdapter :
     BaseQuickAdapter<LZChannelBean,

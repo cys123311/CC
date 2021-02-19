@@ -1,13 +1,7 @@
 package com.sprout.ui.main.addition
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.graphics.Bitmap
-import android.net.Uri
-import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -24,7 +18,6 @@ import com.alibaba.sdk.android.oss.ServiceException
 import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback
 import com.alibaba.sdk.android.oss.callback.OSSProgressCallback
 import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider
-import com.alibaba.sdk.android.oss.internal.OSSAsyncTask
 import com.alibaba.sdk.android.oss.model.PutObjectRequest
 import com.alibaba.sdk.android.oss.model.PutObjectResult
 import com.amap.api.location.AMapLocation
@@ -42,8 +35,6 @@ import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureConfig
 import com.sprout.R
 import com.sprout.api.URLConstant
-import com.sprout.api.URLConstant.Companion.bucketName
-import com.sprout.api.URLConstant.Companion.ossPoint
 import com.sprout.base.BaseActivity
 import com.sprout.databinding.ActivitySubmitMoreBinding
 import com.sprout.ui.main.addition.adapter.ChannelAdapter
@@ -51,17 +42,15 @@ import com.sprout.ui.main.addition.adapter.LocationAdapter
 import com.sprout.ui.main.addition.adapter.SubmitImgAdapter
 import com.sprout.ui.main.addition.adapter.ThemeAdapter
 import com.sprout.ui.main.addition.bean.ImgData
-import com.sprout.ui.main.addition.bean.LZChannelBean
+import com.sprout.ui.main.home.bean.LZChannelBean
 import com.sprout.ui.main.addition.bean.LZThemeBean
 import com.sprout.ui.main.addition.bean.LocationInfo
-import com.sprout.utils.BitmapUtils
 import com.sprout.utils.PicSelectUtils
 import com.sprout.utils.PwUtils
 import com.sprout.utils.ToastUtil
 import com.sprout.widget.clicks
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 
 /**
  * 动态数据的提交
@@ -95,6 +84,8 @@ class SubmitMoreActivity :
     //声明 oss 图片上传之后 图片路径
     lateinit var ossClient : OSSClient
     var imgs: MutableList<String> = mutableListOf()
+    //用于 记录 图片数量
+    var imgCount = 0
 
 
     //声明 频道 pop 统一设置pop 宽高
@@ -130,6 +121,8 @@ class SubmitMoreActivity :
     override fun initView() {
         //初始化 OSS
         initOss()
+        //初始化 高德定位
+        initLocation()
 
         //图片 列表初始化
         v.recyclerReleaseImg.apply {
@@ -183,8 +176,9 @@ class SubmitMoreActivity :
         }
         v.txtReleaseBtn.clicks {
             //发布数据
-            val content = getSubmitJson()
-            vm.submitTrends(content, true)
+            //二次采样 上传服务器 获取服务器地址 进行组装数据 上传到接口 发布
+            getOssUrl()
+
         }
         v.btnReleaseChannel.clicks {
             //选择频道
@@ -196,7 +190,8 @@ class SubmitMoreActivity :
         }
         v.btnReleaseAddress.clicks {
             //获取 位置 定位
-            location()
+            if(locationList.size>0)obtainLocation(locationList)
+            else ToastUtil.showToast(mContext,"获取位置信息失败")
         }
 
         //适配器 条目监听声明   图片列表、频道、主题、地址
@@ -216,7 +211,7 @@ class SubmitMoreActivity :
             Log.e("222", it.toString())
             when (it.errno) {
                 0 -> {
-                    //发布成功 关闭本页面
+                    //发布成功 关闭本页面r
                     finish()
                 }
                 602 -> {
@@ -242,15 +237,15 @@ class SubmitMoreActivity :
     /**
      *初始化OSS
      */
-    fun initOss() {
+    private fun initOss() {
         val credentialProvider =
             OSSStsTokenCredentialProvider(URLConstant.key, URLConstant.secret, "")
         // 配置类如果不设置，会有默认配置。
         val conf = ClientConfiguration()
-        conf.connectionTimeout = 15 * 1000; // 连接超时，默认15秒。
-        conf.socketTimeout = 15 * 1000; // socket超时，默认15秒。
-        conf.maxConcurrentRequest = 5; // 最大并发请求数，默认5个。
-        conf.maxErrorRetry = 2; // 失败后最大重试次数，默认2次。
+        conf.connectionTimeout = 15 * 1000 // 连接超时，默认15秒。
+        conf.socketTimeout = 15 * 1000 // socket超时，默认15秒。
+        conf.maxConcurrentRequest = 5 // 最大并发请求数，默认5个。
+        conf.maxErrorRetry = 2 // 失败后最大重试次数，默认2次。
         ossClient = OSSClient(applicationContext, URLConstant.ossPoint, credentialProvider)
     }
 
@@ -260,39 +255,38 @@ class SubmitMoreActivity :
     private fun getOssUrl() {
         for (i in submitList.indices) {
             if(!submitList[i].path.isNullOrEmpty()){
-                val scaleBitmp = BitmapUtils.getScaleBitmap(
-                    submitList[i].path,
-                    URLConstant.HEAD_WIDTH, URLConstant.HEAD_HEIGHT
-                )
-                //Bitmap转字符串
-                val baas = ByteArrayOutputStream() // outputstream
+                //记录图片数量
+                imgCount++
 
-                scaleBitmp.compress(Bitmap.CompressFormat.PNG, 100, baas)
-                val apricot: ByteArray = baas.toByteArray() // 转为byte数组
-
-                val path = Base64.encodeToString(apricot, Base64.DEFAULT)
-                getOssLoadURL(path)
+                //bitmp 二次采样 后 返回流 故为空 看不到具体值
+//                val scaleBitmp = BitmapUtils.getScaleBitmap(
+//                    submitList[i].path,
+//                    URLConstant.HEAD_WIDTH, URLConstant.HEAD_HEIGHT
+//                )
+//                val apricot= BitmapUtils.getBytesByBitmap(scaleBitmp)
+//                val path = Base64.encodeToString(apricot, Base64.DEFAULT)
+                submitList[i].path?.let { getOssLoadURL(it) }
             }
         }
+//        val content = getSubmitJson()
+//        vm.submitTrends(content, true)
     }
 
     //获取 Oss 上传之后图片路径
     fun getOssLoadURL(path: String) {
         val fileName = path.substring(path.lastIndexOf("/") + 1, path.length)
         val put = PutObjectRequest(URLConstant.bucketName, fileName, path)
-        put.progressCallback =
-            OSSProgressCallback<PutObjectRequest> { request, currentSize, totalSize ->
+
+        put.progressCallback = OSSProgressCallback<PutObjectRequest> { request, currentSize, totalSize ->
                 // 进度百分比的计算
                 // int p = (int) (currentSize/totalSize*100);
                 if (currentSize == totalSize) {
-                    //完成
+                    //本地地址完成
                     val headUrl = request.uploadFilePath
-                    //
-                    Log.i("HeadUrl", headUrl);
-                    //request.getUploadFilePath()
+                    Log.i("111", "本地地址完成$headUrl")
                 }
             }
-        val task = ossClient.asyncPutObject(put,
+        ossClient.asyncPutObject(put,
             object : OSSCompletedCallback<PutObjectRequest, PutObjectResult> {
 
                 override fun onSuccess(request: PutObjectRequest, result: PutObjectResult) {
@@ -300,10 +294,12 @@ class SubmitMoreActivity :
                     Log.d("ETag", result.eTag)
                     Log.d("RequestId", result.requestId)
                     //成功的回调中读取相关的上传文件的信息  生成一个url地址
-                    val url =
-                        ossClient.presignPublicObjectURL(request.bucketName, request.objectKey)
-                    //TODO 刷新显示到界面上
+                    val url = ossClient.presignPublicObjectURL(request.bucketName, request.objectKey)
                     imgs.add(url)
+                    if (imgs.size == imgCount){
+                        val content = getSubmitJson()
+                        vm.submitTrends(content, true)
+                    }
                 }
 
                 override fun onFailure(
@@ -312,7 +308,10 @@ class SubmitMoreActivity :
                     serviceException: ServiceException?
                 ) {
                     // 请求异常。  // 本地异常，如网络异常等。
-                    clientException?.printStackTrace()
+                    if (clientException!=null){
+                        clientException.printStackTrace()
+                        Log.e("111",clientException.toString())
+                    }
 
                     if (serviceException != null) {
                         // 服务异常。
@@ -329,14 +328,12 @@ class SubmitMoreActivity :
      * 组装提交的内容
      */
     fun getSubmitJson(): String {
-        //二次采样 上传服务器 获取服务器地址 进行组装数据 上传到接口 发布
-        getOssUrl()
-        val title = v.editReleaseTitle.toString() //标题
-        val mood = v.editReleaseContent.toString()  //内容 心情
-        val theme = v.textView5.toString()   //主题 内容
-        val address = v.textView6.toString()       //地址
+        val title = v.editReleaseTitle.text.toString()        //标题
+        val mood = v.editReleaseContent.text.toString()       //内容 心情
+        val theme = v.textView5.text.toString()          //主题 内容
+        val address = v.textView6.text.toString()        //地址
         val json: JSONObject = JSONObject()
-        json.put("type", type)              //类型 图片为1 视频为2
+        json.put("type", type)                //类型 图片为1 视频为2
         json.put("title", title)              //标题
         json.put("mood", mood)                //内容 情绪
         json.put("address", address)          //地址
@@ -371,12 +368,8 @@ class SubmitMoreActivity :
 
             }
         }
-
         return json.toString()
     }
-
-
-
 
     /**
      * 打开activity后回传
@@ -392,7 +385,7 @@ class SubmitMoreActivity :
                 //头像的压缩和二次采样
                 //把选中的图片插入到列表
                 for (i in 0 until selectList.size) {
-                    val imgData = ImgData(selectList.get(i).path, mutableListOf())
+                    val imgData = ImgData(selectList[i].path, mutableListOf())
                     val index = submitList.size - 1
                     submitList.add(index, imgData)
                 }
@@ -421,7 +414,7 @@ class SubmitMoreActivity :
     /**
      * 关于定位  初始化 定位
      */
-    private fun location() {
+    private fun initLocation() {
         //初始化定位
         mLocationClient =
             AMapLocationClient(mContext)
@@ -455,7 +448,9 @@ class SubmitMoreActivity :
         search.searchPOIAsyn()
     }
 
-    override fun onPoiItemSearched(p0: PoiItem?, p1: Int) {}
+    override fun onPoiItemSearched(p0: PoiItem?, p1: Int) {
+
+    }
 
     override fun onPoiSearched(result: PoiResult?, postion: Int) {
         val list: MutableList<LocationInfo> = mutableListOf()
@@ -475,9 +470,8 @@ class SubmitMoreActivity :
 
             list.add(info)
         }
-
-        //展示 位置
-        obtainLocation(list)
+        locationList.addAll(list)
+        v.textView6.text = list[0].address2
     }
 
     /**
@@ -508,11 +502,8 @@ class SubmitMoreActivity :
 
         val popupView = getPWView(R.mipmap.great, locationAdapter)
 
-        //请求到数据 添加到 集合中
-        locationList.clear()
-        locationList.addAll(list)
         //渲染数据
-        locationAdapter.setNewInstance(locationList)
+        locationAdapter.setNewInstance(list)
 
         //开启阴影
         PwUtils.openShadow(window)
@@ -623,5 +614,4 @@ class SubmitMoreActivity :
             }
         }
     }
-
 }

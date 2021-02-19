@@ -1,6 +1,27 @@
 package com.sprout.ui.main.mine
 
-import androidx.fragment.app.Fragment
+import com.sprout.base.BaseFragment
+import com.sprout.databinding.FragmentMineBinding
 
-class MineFragment:Fragment() {
+class MineFragment : BaseFragment<MineViewModel,FragmentMineBinding>() {
+    override fun initView() {
+
+    }
+
+    override fun initVM() {
+
+    }
+
+    override fun initData() {
+
+    }
+
+    override fun initClick() {
+
+    }
+
+    override fun lazyLoadData() {
+
+    }
+
 }

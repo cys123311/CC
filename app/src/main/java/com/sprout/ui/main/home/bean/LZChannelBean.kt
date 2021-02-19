@@ -1,4 +1,4 @@
-package com.sprout.ui.main.addition.bean
+package com.sprout.ui.main.home.bean
 
 data class LZChannelBean(
     val id: Int,

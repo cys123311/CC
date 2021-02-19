@@ -13,7 +13,7 @@ import com.sprout.ui.main.addition.bean.GoodData
 
 class GoodAdapter : BaseQuickAdapter<GoodData.Data,
         BaseDataBindingHolder<AdapterGoodItemBinding>>
-(R.layout.adapter_good_item){
+        (R.layout.adapter_good_item){
 
     override fun convert(
         holder: BaseDataBindingHolder<AdapterGoodItemBinding>,
