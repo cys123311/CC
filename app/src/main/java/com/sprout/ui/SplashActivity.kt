@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Handler
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.Gravity
@@ -18,14 +17,11 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.luck.picture.lib.tools.ToastUtils
-import com.lxj.xpopup.XPopup
 import com.sprout.R
 import com.sprout.base.BaseActivity
 import com.sprout.base.BaseViewModel
 import com.sprout.databinding.ActivitySplashBinding
 import com.sprout.ui.main.HomeActivity
-import com.sprout.ui.main.InitActivity
 import com.sprout.ui.main.login.RegisterActivity
 import com.sprout.utils.MyMmkv
 import com.sprout.utils.StatusBarUtil
@@ -37,10 +33,10 @@ import kotlinx.android.synthetic.main.layout_guidance_pop.view.*
 class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
 
     private var popupWindow: PopupWindow? = null
-    private var guidance : Boolean = MyMmkv.getBool("guidance") //是否进入过引导页
     private var long : Boolean = MyMmkv.getBool("long")//是否登录过
 
     override fun initView() {
+//        buildDialog(getResources().getString(R.string.trimming)).show()
         StatusBarUtil.immersive(this)
         StatusBarUtil.darkMode(this)
         if (!this.isTaskRoot) {
@@ -57,8 +53,10 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
             //申请权限
             requestPermissions(
                 arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    Manifest.permission.READ_EXTERNAL_STORAGE,  //文件读取权限
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_FINE_LOCATION    //位置权限
+//                    Manifest.permission.CAMERA              //相机权限
                 ), 1001
             )
         } else {
@@ -79,7 +77,7 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
         Handler().postDelayed({
             startActivity(Intent(mContext, HomeActivity::class.java))
             finish()
-        }, 2000)
+        }, 3000)
     }
 
     //登录
@@ -88,7 +86,7 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
         Handler().postDelayed({
             startActivity(Intent(mContext, RegisterActivity::class.java))
             finish()
-        }, 2000)
+        }, 3000)
     }
 
     override fun initClick() {
@@ -115,6 +113,7 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
         val attributes = window.attributes
         attributes.alpha = 0.5f
         window.attributes = attributes
+
         //找到视图
         popupWindow!!.contentView = popupView
         popupWindow!!.isClippingEnabled = false
@@ -133,9 +132,7 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
             popupWindow!!.dismiss()//关闭弹窗
             initPwNo()
             initRegister()
-            val ok = "已经进入过引导页"
             MyMmkv.setValue("guidance",true)
-//            SpUtils.instance!!.setValue("guidance", ok)
         }
 
         //在按钮的下方弹出  无偏移 第一种方式

@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sprout">
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
@@ -24,7 +23,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许程序读写手机状态和身份 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /><!--位置权限-->
 
     <application
         android:name=".App"
@@ -36,13 +35,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="n">
+        tools:targetApi="n"
+        tools:ignore="GoogleAppIndexingWarning, LockedOrientationActivity">
         <activity android:name=".ui.main.music.MusicActivity"/>
         <activity android:name=".Text2Activity"/>
         <activity android:name=".TextActivity" />
         <activity android:name=".ui.main.addition.AdditionActivity" />
         <activity android:name=".ui.main.addition.SubmitMoreActivity"/>
-        <activity android:name=".ui.main.InitActivity" />
         <activity android:name=".ui.main.login.RegisterActivity" />
         <activity android:name=".ui.main.login.LoginActivity" />
         <activity android:name=".ui.SplashActivity">
@@ -54,37 +53,20 @@
         </activity>
         <activity android:name=".ui.main.HomeActivity" />
 
+
+        <!--三方 library video视频剪辑-->
+        <activity
+            android:name="com.iknow.android.features.select.VideoSelectActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.iknow.android.features.trim.VideoTrimmerActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.iknow.android.features.record.VideoRecordActivity"
+            android:screenOrientation="portrait"/>
+
         <!--高德地图-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="68b95eaa97b4a745fc0fdd41cef1290c" />
-
-        <!--音乐播放器MusicService-->
-        <service
-            android:name="com.lzx.musiclibrary.MusicService"
-            android:exported="true"
-            android:process=":MusicLibrary" />
-        <!--Wire control related-->
-        <receiver
-            android:name="com.lzx.musiclibrary.receiver.RemoteControlReceiver"
-            android:exported="true"
-            android:process=":MusicLibrary">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
-        <!--Notification bar event related-->
-        <receiver
-            android:name="com.lzx.musiclibrary.receiver.PlayerReceiver"
-            android:exported="true"
-            android:process=":MusicLibrary">
-            <intent-filter>
-                <action android:name="com.lzx.nicemusic.close" />
-                <action android:name="com.lzx.nicemusic.play_pause" />
-                <action android:name="com.lzx.nicemusic.prev" />
-                <action android:name="com.lzx.nicemusic.next" />
-            </intent-filter>
-        </receiver>
 
         <!--文件下载-->
         <provider

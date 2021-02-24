@@ -1,24 +1,32 @@
-<resources>
-    <string name="app_name">绿洲</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" translatable="false">绿洲</string>
 
-    <string name="wb">点击了微博登录</string>
-    <string name="wc">点击了微信登录</string>
-    <string name="qq">点击了qq登录</string>
-    <string name="register_phone">请输入手机号</string>
-    <string name="register_phone_code">手机号格式有误,请检查后重新输入</string>
+    <string name="wb" translatable="false">点击了微博登录</string>
+    <string name="wc" translatable="false">点击了微信登录</string>
+    <string name="qq" translatable="false">点击了qq登录</string>
+    <string name="register_phone" translatable="false">请输入手机号</string>
+    <string name="register_phone_code" translatable="false">手机号格式有误,请检查后重新输入</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
-    <string name="login_title">登录后更精彩</string>
-    <string name="login_get_message">请输入密码</string>
-    <string name="login_other_fun">其他登录方式</string>
-    <string name="login_user_agreement">登录表示您已阅读并同意</string>
-    <string name="user_agreement">用户协议</string>
-    <string name="privacy_clause">隐私条款</string>
-    <string name="login_hint">请输入账号</string>
-    <string name="login_num">+86</string>
-    <string name="login_resend">重新发送</string>
-    <string name="login_inpput_code">登录</string>
-    <string name="same_city_punch_clock">开始打卡记录日常把~></string>
+    <string name="login_title" translatable="false">登录后更精彩</string>
+    <string name="login_get_message" translatable="false">请输入密码</string>
+    <string name="login_other_fun" translatable="false">其他登录方式</string>
+    <string name="login_user_agreement" translatable="false">登录表示您已阅读并同意</string>
+    <string name="user_agreement" translatable="false">用户协议</string>
+    <string name="privacy_clause" translatable="false">隐私条款</string>
+    <string name="login_hint" translatable="false">请输入账号</string>
+    <string name="login_num" translatable="false">+86</string>
+    <string name="login_resend" translatable="false">重新发送</string>
+    <string name="login_inpput_code" translatable="false">登录</string>
+    <string name="same_city_punch_clock" translatable="false">开始打卡记录日常把~></string>
+    <string name="distance_city_km" translatable="false">km~></string>
+
+
+    <string name="xliff_test" translatable="false">
+        <xliff:g id="NAME">%1$50s</xliff:g>
+        <xliff:g id="AGE">%2$1.2f</xliff:g>
+    </string>
+
 
 </resources>

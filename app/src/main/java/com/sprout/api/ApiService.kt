@@ -51,10 +51,11 @@ interface ApiService {
 
     //发布动态 api/trends/submitTrends
     //注解中@Body标签不能和@FormUrlEncoded .@Multipart标签同时使用。
-    @Headers("Content-Type: application/json")
+    @Headers("Content-Type:application/json")
     @JvmSuppressWildcards
     @POST("api/trends/submitTrends")
-    suspend fun submitTrends(@Body trends: List<RequestBody>) :BaseResult<LZSubmitTrends>
+    suspend fun submitTrends(@Body trends:RequestBody) :BaseResult<LZSubmitTrends>
+
 
     /**
      * 获取动态数据

@@ -32,6 +32,9 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
         super.onCreate(savedInstanceState)
         initResources()
 
+        //onCreate中入栈
+        AcitivityManager.instance.addActivity(this)
+
         //注意 type.actualTypeArguments[0]=BaseViewModel，type.actualTypeArguments[1]=ViewBinding
         val type = javaClass.genericSuperclass as ParameterizedType
         val clazz1 = type.actualTypeArguments[0] as Class<VM>
@@ -67,6 +70,8 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
 
     override fun onDestroy() {
         super.onDestroy()
+        //onDestroy中入移除
+        AcitivityManager .instance.removeActivity(this)
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this)
         }

@@ -232,6 +232,4 @@ public class LocationUtils {
         void onGetAddress(Address address);
         void onGetLocation(double lat,double lng);
     }
-
-
 }

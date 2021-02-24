@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.sprout"
         minSdkVersion 22
-        targetSdkVersion 30
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -69,18 +69,30 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-runtime:2.3.2'
-    testImplementation 'junit:junit:4.12'
+    implementation project(path: ':video')
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    //anko库 弹框
+    implementation "org.jetbrains.anko:anko:0.10.8"
+
+    // fastjson依赖是阿里巴巴提供的用于处理json-object数据转换。
+    implementation 'com.alibaba:fastjson:1.2.66'
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'com.google.android.material:material:1.2.1'
 
 
+    //FFmpeg是为大家所熟悉的处理视频的一个跨平台的开源库，支持android、ios
+    //implementation 'com.writingminds:FFmpegAndroid:0.3.2'
+
     //pop弹窗库  这种弹窗从 1.0.0版本开始实现了优雅的手势交互和智能嵌套滚动
     implementation 'com.lxj:xpopup:2.2.8'
+    //statelayout 图片 展示
+//    implementation 'com.lxj:statelayout:1.1.1'
+    implementation 'com.lxj:easyadapter:1.2.3'
 
     //指示器库
     implementation 'com.github.hackware1993:MagicIndicator:1.6.0'
@@ -89,7 +101,7 @@ dependencies {
     implementation 'com.amap.api:map2d:6.0.0'
     implementation 'com.amap.api:search:7.7.0'
 
-    //阿里云
+    //阿里云 oss
     implementation 'com.aliyun.dpa:oss-android-sdk:2.9.5'
 
     //mmkv数据保存
@@ -149,6 +161,8 @@ dependencies {
     final GLIDE_VERSION = '4.11.0'
     implementation "com.github.bumptech.glide:glide:$GLIDE_VERSION"
     implementation "com.github.bumptech.glide:okhttp3-integration:$GLIDE_VERSION"
+    //高斯模糊的库
+    implementation 'jp.wasabeef:glide-transformations:2.0.1'
 
     //网络请求框架
     final RETROFIT_VERSION = '2.8.1'

@@ -1,27 +1,33 @@
 package com.sprout.ui.main.addition
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.sprout.base.BaseViewModel
 import com.sprout.ui.main.home.bean.LZChannelBean
-import com.sprout.ui.main.addition.bean.LZSubmitTrends
 import com.sprout.ui.main.addition.bean.LZThemeBean
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.RequestBody
 
 class SubmitViewModel : BaseViewModel() {
 
-    //发布动态  提交数据
-    var submit: MutableLiveData<LZSubmitTrends> = MutableLiveData()
+    var state:MutableLiveData<Int> = MutableLiveData()
 
-    fun submitTrends(json: String, isShowLoading: Boolean) {
-        // json 类型 转换成 RequestBody 类型 进行提交数据
-        val body = RequestBody.create(MediaType.parse
-            ("application/json;charset=utf-8"),json)
-        // https://stackoverflow.com/questions/32821102/retrofit-500-internal-server-error
-        val friendsList: MutableList<RequestBody> = mutableListOf()
-        friendsList.add(body)
-
-        launch({ httpUtil.submitTrends(friendsList) },submit,isShowLoading)
+    /**
+     * 提交动态数据
+     */
+    fun submitTrends(json:String){
+        val body = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),json)
+        viewModelScope.launch {
+            var result = httpUtil.submitTrends(body)
+            if(result.errorCode == 0){
+                state.postValue(0)
+            }else if(result.errorCode == 603){
+                state.postValue(-2)  //token无效
+            }else{
+                state.postValue(-1)
+            }
+        }
     }
 
     //获取频道

@@ -7,16 +7,18 @@ class LZTrendsData(
     val date: String,    // 2021-02-3 07:50:39
     val goods: Int,      //0
     val id: Int,         //65
-    val lat: Int,
-    val lng: Int,
+    val lat: Float,
+    val lng: Float,
     val mood: String,       //今天好心情 好天气
     val nickname: String,
     val res: List<Re>,      //标签
     val themeid: Int,
     val title: String,   //好天气
-    val type: Int,       //1
+    val type: Int,       //1 图片 2视频
     val uid: String,     // 4c6aca29-1b73-4a22-b507-04e0e3208f4e
-    val url: String      //图片 1.png
+    val url: String,     //图片 1.png
+    var distance: String  //自定义属性 用于 两个地点之间距离
+
 ){
 
 data class Re(

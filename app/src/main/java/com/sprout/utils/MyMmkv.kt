@@ -7,6 +7,15 @@ import com.tencent.mmkv.MMKV
  * 本地数据保存MMKV
  *
  */
+//// 增
+//mmkv.encode("token", token);
+//// 删
+//mmkv.removeValueForKey("token");  //删除单个
+//mmkv.removeValuesForKeys(new String[]{"name", "token"}); //删除多个
+////改 （在执行一次增操作）
+//mmkv.encode("token", token);
+////查
+//mmkv.decodeString("token");
 class MyMmkv {
 
     /**
@@ -22,6 +31,13 @@ class MyMmkv {
         fun initMMKV(){
             MMKV.initialize(App.instance)
             mkv = MMKV.defaultMMKV()
+        }
+
+        /**
+         * 清空MMKV
+         */
+        fun removeKey(array: Array<String>){
+            mkv.removeValuesForKeys(array)
         }
 
         //保存数据

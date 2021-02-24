@@ -1,3 +1,3 @@
 package com.sprout.ui.bean
 
-class Poi(val lat:Double,val lon:Double)
+data class Poi(val lat: Float, val lon: Float)

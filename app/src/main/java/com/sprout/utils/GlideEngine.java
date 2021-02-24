@@ -93,6 +93,12 @@ public  class GlideEngine implements ImageEngine {
                 .into(imageView);
     }
 
+    public void loadImage(@NonNull Context context, @NonNull int url, @NonNull ImageView imageView) {
+        Glide.with(context).load(url)
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageView);
+    }
+
     /**
      * 加载网络图片适配长图方案
      * # 注意：此方法只有加载网络图片才会回调

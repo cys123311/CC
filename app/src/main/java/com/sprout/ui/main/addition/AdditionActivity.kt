@@ -5,22 +5,29 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemChildClickListener
+import com.iknow.android.features.select.VideoSelectActivity
 import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureConfig
-import com.luck.picture.lib.config.PictureMimeType
+import com.luck.picture.lib.tools.ScreenUtils
+import com.luck.picture.lib.tools.ToastUtils
 import com.sprout.R
+import com.sprout.api.URLConstant
+import com.sprout.api.ext.navigationTo
 import com.sprout.base.BaseActivity
 import com.sprout.databinding.ActivityAdditionBinding
 import com.sprout.ui.main.addition.adapter.BrandAdapter
@@ -30,10 +37,15 @@ import com.sprout.ui.main.addition.bean.BrandData
 import com.sprout.ui.main.addition.bean.GoodData
 import com.sprout.ui.main.addition.bean.ImgData
 import com.sprout.ui.main.addition.bean.RecentTags
-import com.sprout.utils.CacheUtil
-import com.sprout.utils.GlideEngine
+import com.sprout.ui.main.login.RegisterActivity
+import com.sprout.utils.MyMmkv
+import com.sprout.utils.PicSelectUtils
+import com.sprout.widget.clicks
+import com.sprout.widget.glide.BlurTransformation
+import org.jetbrains.anko.alert
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
 
 /**
  * 动态页面图片的编辑
@@ -41,6 +53,16 @@ import org.json.JSONObject
 class AdditionActivity :
     BaseActivity<AdditionViewModel, ActivityAdditionBinding>() ,
     OnItemChildClickListener {
+
+    var token = MyMmkv.getString(URLConstant.token)
+
+    //用于 选择 图片资源、视频资源 完成选择
+    var photoOrVideo : Boolean = false
+
+    //用于 跳转到视频编辑页面 请求码
+    var CODE_VIDEO : Int = 100
+    var PAGE_TYPE :Int = URLConstant.TYPE_IMG //获取 类型 1图片 2视频
+    var RETURN_HOME : Int = 0  //发布成功 关闭本页面 回到主页面
 
     //记录上一个初始化的tag
     lateinit var lastTagText: TextView
@@ -72,9 +94,31 @@ class AdditionActivity :
     //最近标签 数据集合
     var recentTags : MutableList<RecentTags> = mutableListOf()
 
-    override fun initView() {
-        openPhoto()
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus){
+            if (token.isNullOrEmpty()){
+                /**
+                 * 打开一个君如登录页的弹框
+                 */
+                alert("请先登录"){
+                    positiveButton("稍后登录"){
+                        finish()
+                    }
+                    negativeButton("立即登录"){
+                        MyMmkv.setValue("long2", true)
+                        navigationTo<RegisterActivity>()
+                    }
+                }.show()
+            }
+            // 待获取 windel 窗口后 打开相册选取图片、视频
+            if(imgArray.size>0)return
+            openChangeAlert()
+        }
+    }
+
+    override fun initView() {
         //请求数据 brand 用于显示
         vm.getLabelBrandList(true)
 
@@ -116,6 +160,7 @@ class AdditionActivity :
         //标签集合设置为横向
         v.recyclerRecentTag.layoutManager = LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
         //最近标签 渲染数据
+        recentTags.reverse() //反转list
         recentTagsAdapter.setNewInstance(recentTags)
         //最近标签 适配器绑定
         v.recyclerRecentTag.adapter = recentTagsAdapter
@@ -158,12 +203,54 @@ class AdditionActivity :
                             !it.name.contains(s.toString())
                         })
                         goodAdapter.notifyDataSetChanged()
-
                     }
                 }
             }
         })
+    }
 
+    /**
+     * 打开一个选中图片或者视频的弹框
+     */
+    private fun openChangeAlert(){
+
+        Glide.with(this).load(R.mipmap.ic_addition_back)
+            .apply(RequestOptions.bitmapTransform(
+                BlurTransformation(this, 25, 3)))
+            .into(v.ivAddBack)
+
+        val view: View = LayoutInflater.from(this)
+            .inflate(R.layout.layout_change_pop, null)
+
+        //声明 频道 pop 统一设置pop 宽高
+        val pWAddition = PopupWindow(
+            (ScreenUtils.getScreenWidth(this) * 0.7).toInt(),
+            (ScreenUtils.getScreenHeight(this) * 0.2).toInt()
+        )
+
+        //获取控件id
+        val tvPhoto = view.findViewById<TextView>(R.id.tv_photo)
+        val tvVideo = view.findViewById<TextView>(R.id.tv_video)
+
+        tvPhoto.clicks {
+            //图库 页面逻辑 处理
+            PAGE_TYPE = URLConstant.TYPE_IMG
+            openPhoto()
+            pWAddition.dismiss()
+        }
+        tvVideo.clicks {
+            //视频
+            PAGE_TYPE = URLConstant.TYPE_VIDEO
+            openVideo()
+            pWAddition.dismiss()
+        }
+
+        //找到视图
+        pWAddition.contentView = view
+        pWAddition.isClippingEnabled = false
+
+        //在按钮的下方弹出  无偏移 第一种方式
+        pWAddition.showAtLocation(v.groupView, Gravity.CENTER, 0, 0) //开启弹窗
     }
 
     override fun initClick() {
@@ -192,6 +279,7 @@ class AdditionActivity :
         })
     }
 
+
     inner class Proxy {
         fun txtTag(view: View) {
 
@@ -215,11 +303,10 @@ class AdditionActivity :
                     setTagTheme(v.txtTagUser)
                 }
                 R.id.txt_label_next -> {
-                    //下一步
+                    //下一步 图片
                     val intent = Intent(mContext,SubmitMoreActivity::class.java)
-                    intent.putExtra("data",decodeImgs())
-                    startActivity(intent)
-                    finish()
+                    intent.putExtra("img_data",decodeImgs())
+                    startActivityForResult(intent,RETURN_HOME)
                 }
             }
         }
@@ -253,35 +340,63 @@ class AdditionActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
-            PictureConfig.CHOOSE_REQUEST->{
+            PictureConfig.CHOOSE_REQUEST->{//图库返回
                 val selectList = PictureSelector.obtainMultipleResult(data)
-                if (selectList.size === 0) return
-                //获取本地图片的选择地址，上传到服务器
-                //头像的压缩和二次采样
-                //把选中的图片插入到列表
-                for(i in selectList.indices){
-                    imgList.add(selectList[i].path)
-                    val imgData = ImgData(selectList[i].path, mutableListOf())
-                    imgArray.add(imgData)
-                    val fragment = ImageFragment.instance(i,selectList[i].path, mutableListOf())
-                    fragments.add(fragment)
+                if (selectList.size === 0) {
+                    photoOrVideo = false  //选择 打开相册 为true 打开视频编辑默认为false
+                    v.ivAddBack.visibility = View.VISIBLE  //背景图片显示
+                    v.lineAddition.visibility = View.GONE //主布局隐藏
+                    return
+                }else{
+                    photoOrVideo = true  //选择 打开相册 为true 打开视频编辑默认为false
+                    v.ivAddBack.visibility = View.GONE  //背景图片隐藏
+                    v.lineAddition.visibility = View.VISIBLE //主布局显示
                 }
-                v.txtLabelBannerIndex.text = "${1}/${imgList.size}"
-                mViewPager.adapter?.notifyDataSetChanged()
+                when(PAGE_TYPE){
+                    URLConstant.TYPE_IMG -> { //图片1 视频2
+                        for(i in selectList.indices){
+                            imgList.add(selectList[i].path)//保留图片的绝对路径
+                            val imgData = ImgData(selectList[i].path, mutableListOf())  //图片数据的初始化
+                            imgArray.add(imgData)
+                            val fragment = ImageFragment.instance(i,selectList[i].path, imgData.tags)
+                            fragments.add(fragment)
+                        }
+                        v.txtLabelBannerIndex.text = "${1}/${imgList.size}"
+                        mViewPager.adapter?.notifyDataSetChanged()
+                    }
+                    URLConstant.TYPE_VIDEO ->{
+
+                    }
+                }
+
+            }
+            CODE_VIDEO->{ //视频编辑返回
+                //视频编辑完成 返回 视频路径 携带数据 跳转到发布页
+                if (data!=null && data.hasExtra("newVideoPath")){
+                    val intent = Intent(this, SubmitMoreActivity::class.java)
+                    intent.putExtra("video_data", data.getStringExtra("newVideoPath"))
+                    startActivityForResult(intent,RETURN_HOME)
+                }else{
+                    ToastUtils.s(this,"没有接收到视频压缩处理的数据")
+                }
+            }
+            RETURN_HOME->{
+                if (resultCode==0){
+                    finish() //关闭本页面
+                }
             }
         }
     }
 
+    //初始化视频
+    private fun openVideo(){
+        startActivityForResult(
+            Intent(this,VideoSelectActivity::class.java),CODE_VIDEO)
+    }
 
     //初始化图片
     private fun openPhoto() {
-        PictureSelector.create(this)
-            .openGallery(PictureMimeType.ofImage())
-            .loadImageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
-            .maxSelectNum(9)
-            .imageSpanCount(3)
-            .selectionMode(PictureConfig.MULTIPLE)
-            .forResult(PictureConfig.CHOOSE_REQUEST)
+        PicSelectUtils.openPhoto(9,this)
     }
 
     //根据点击事件动态更换4个Tag的状态
@@ -307,15 +422,15 @@ class AdditionActivity :
      * json结构原生的封装
      */
     private fun decodeImgs(): String? {
-        var imgs = JSONArray()
+        val imgs = JSONArray()
         for(i in 0 until imgArray.size){
-            var item = imgArray[i]
-            var imgJson = JSONObject()  //图片的json结构
+            val item = imgArray[i]
+            val imgJson = JSONObject()  //图片的json结构
             imgJson.put("path",item.path)
-            var tags = JSONArray()
+            val tags = JSONArray()
             for(j in 0 until item.tags.size){
-                var tag = item.tags[j]
-                var tagJson = JSONObject()
+                val tag = item.tags[j]
+                val tagJson = JSONObject()
                 tagJson.put("x",tag.x)
                 tagJson.put("y",tag.y)
                 tagJson.put("type",tag.type)

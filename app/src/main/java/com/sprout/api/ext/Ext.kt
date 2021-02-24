@@ -28,7 +28,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.util.Util
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.sprout.base.BaseFragment
-import com.yanzhenjie.loading.Utils
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray

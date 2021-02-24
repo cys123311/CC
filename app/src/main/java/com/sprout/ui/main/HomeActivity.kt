@@ -3,17 +3,23 @@ package com.sprout.ui.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.amap.api.location.AMapLocation
+import com.amap.api.location.AMapLocationClient
+import com.amap.api.location.AMapLocationClientOption
+import com.amap.api.location.AMapLocationListener
 import com.sprout.R
 import com.sprout.ui.main.addition.AdditionActivity
 import com.sprout.ui.main.discover.DiscoverFragment
 import com.sprout.ui.main.home.HomeFragment
 import com.sprout.ui.main.message.MessageFragment
 import com.sprout.ui.main.mine.MineFragment
+import com.sprout.utils.MyMmkv
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity() ,View.OnClickListener {
+class HomeActivity : AppCompatActivity() ,View.OnClickListener{
 
     private var manager: FragmentManager? = null
 
@@ -100,3 +106,28 @@ class HomeActivity : AppCompatActivity() ,View.OnClickListener {
 
     }
 }
+//latitude=39.916295#
+//longitude=116.410344#
+//province=北京市#
+// coordType=GCJ02#
+// city=北京市#
+// district=东城区#
+// cityCode=010#
+// adCode=110101#
+// address=北京市东城区锡拉胡同8号靠近北京利生体育商厦#
+// country=中国#
+// road=锡拉胡同#
+// poiName=北京利生体育商厦#
+// street=锡拉胡同#
+// streetNum=8号#
+// aoiName=淘汇新天#
+// poiid=#
+// floor=#
+// errorCode=0#
+// errorInfo=success#
+// locationDetail=#
+// id:YaWU4OG5sZmRmZjg4Ym1obXBrZmphY2U1OWFjMGZiLFg2emNPbE02R2dzREFBNlZoalB3bWpNTQ==#
+// csid:a62654bbcf304b278f938ee04aef123a#
+// description=在北京利生体育商厦附近#
+// locationType=6#
+// conScenario=0

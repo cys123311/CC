@@ -13,7 +13,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 class RecommendIndicatorAdapter(val list: List<String>,val pager:ViewPager2):CommonNavigatorAdapter() {
 
     override fun getCount(): Int {
-
         return list.size
     }
 
