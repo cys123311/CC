@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         tools:context=".ui.main.login.RegisterActivity">
 
-
         <com.sprout.ui.custom.CustomVideoView
             android:id="@+id/videoview_register"
             android:layout_width="match_parent"

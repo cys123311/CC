@@ -37,7 +37,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="n"
         tools:ignore="GoogleAppIndexingWarning, LockedOrientationActivity">
-        <activity android:name=".ui.main.music.MusicActivity"/>
         <activity android:name=".Text2Activity"/>
         <activity android:name=".TextActivity" />
         <activity android:name=".ui.main.addition.AdditionActivity" />
@@ -51,7 +50,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.HomeActivity" />
+        <activity android:name=".ui.main.HomeActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
 
 
         <!--三方 library video视频剪辑-->

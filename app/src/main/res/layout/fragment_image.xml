@@ -8,7 +8,6 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_400"
-
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.sprout.widget.TagsLayout

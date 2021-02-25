@@ -74,11 +74,14 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    //三方视频
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.8'
+
+    //NurVideoPlayer 视频播放器(ijkPlayer的封装很好用)
+    //implementation 'com.gitee.nurApplication:NurVideoPlayer:2.1.0'
+
     //anko库 弹框
     implementation "org.jetbrains.anko:anko:0.10.8"
-
-    // fastjson依赖是阿里巴巴提供的用于处理json-object数据转换。
-    implementation 'com.alibaba:fastjson:1.2.66'
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'

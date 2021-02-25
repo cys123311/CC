@@ -251,6 +251,7 @@ class SubmitMoreActivity :
             when (it) {
                 0 -> {
                     //发布成功 关闭本页面r
+                    ToastUtil.showToast(mContext,"发布成功")
                     val intent = intent
                     setResult(RETURN_ADD, intent)
                     finish()

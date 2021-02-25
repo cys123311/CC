@@ -47,7 +47,7 @@ class SubRecAdapter : BaseQuickAdapter<LZTrendsData,
                 )
                     .load(item.url)
                     .apply(RequestOptions.bitmapTransform(RoundedCorners(10)))
-                    .into(vh.imgCity)
+                    .into(vh.imgSub)
             }
         }
     }

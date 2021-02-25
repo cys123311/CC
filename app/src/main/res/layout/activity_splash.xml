@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
             android:format24Hour ="HH:mm"
             android:format12Hour ="hh:mm"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_400"
         android:src="@drawable/splash_bg"
-        android:layout_marginTop="@dimen/dp_120"
+        android:layout_marginTop="@dimen/dp_118"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView

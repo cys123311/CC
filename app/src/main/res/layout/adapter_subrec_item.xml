@@ -15,7 +15,7 @@
 
         <ImageView
             app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/img_city"
+            android:id="@+id/img_sub"
             imageUrl="@{subRecData.url}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

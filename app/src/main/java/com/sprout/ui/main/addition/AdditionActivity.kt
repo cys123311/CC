@@ -160,8 +160,8 @@ class AdditionActivity :
         //标签集合设置为横向
         v.recyclerRecentTag.layoutManager = LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
         //最近标签 渲染数据
-        recentTags.reverse() //反转list
         recentTagsAdapter.setNewInstance(recentTags)
+//        recentTags.reverse() //反转list
         //最近标签 适配器绑定
         v.recyclerRecentTag.adapter = recentTagsAdapter
 
@@ -317,7 +317,7 @@ class AdditionActivity :
             R.id.init_brand ->{
                 //初始化 最近标签 数据
                 val item = brandList[position]
-                recentTags.add(RecentTags(0,item.name,item.sort,item.url+""))
+                recentTags.add(0,RecentTags(0,item.name,item.sort,item.url+""))
                 setTagAdapter()
 
                 val id = brandList[position].id
@@ -327,7 +327,7 @@ class AdditionActivity :
             R.id.init_good ->{
                 //初始化最近标签 数据
                 val item = goodList[position]
-                recentTags.add(RecentTags(1,item.name,item.sort,item.url+""))
+                recentTags.add(0,RecentTags(1,item.name,item.sort,item.url+""))
                 setTagAdapter()
 
                 val id = goodList[position].id

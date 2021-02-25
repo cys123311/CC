@@ -8,16 +8,14 @@ import com.lxj.easyadapter.EasyAdapter
 import com.lxj.easyadapter.ViewHolder
 import com.lxj.xpopup.XPopup
 import com.sprout.R
-import com.sprout.ui.main.home.bean.LZTrendsData
 import com.sprout.utils.XPopupUtils
-import java.util.*
 
-class ImageAdapter2(val list: List<Objects>, private val viewPager2: ViewPager2) :
-    EasyAdapter<Objects>(list, R.layout.adapter_image2) {
+class ImageAdapter2(val list: List<String>, private val viewPager2: ViewPager2) :
+    EasyAdapter<String>(list, R.layout.adapter_image2) {
 
-    override fun bind(holder: ViewHolder, t: Objects, position: Int) {
+    override fun bind(holder: ViewHolder, t: String, position: Int) {
 
-        val imageView = holder.getView<ImageView>(R.id.image)
+        val imageView = holder.getView<ImageView>(R.id.image2)
         //1. 加载图片
         Glide.with(imageView).load(t).into(imageView)
 
